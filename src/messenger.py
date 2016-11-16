@@ -1,37 +1,58 @@
 import sys
 import os.path
 from user import User
-from group import Group
+from group import Group, register_user
 
 if sys.argv[1] == '-b':
     if os.path.isfile(sys.argv[2]):
         with open(sys.argv[2]) as f:
+            count = 0
+            print '{}:  OK'.format(count)
             content = f.readlines()
             for line in content:
+                count += 1
                 l = str.split(line)
 
                 if l[0].startswith('add_user'):
-                    User(int(l[0][9:-1]), l[1][:-1])
+                    print '->{}'.format(str.split(line, '\t')[0])
+                    user = User(int(l[0][9:-1]), l[1][:-1])
+                    print '  {}:  {}'.format(count, user.msg1)
+                    print '  {}'.format(user.msg2)
+
                 elif l[0].startswith('add_group'):
                     Group(int(l[0][10:-1]), l[1][:-1])
+
                 elif l[0].startswith('register_user'):
-                    pass
+                    if l[0].find(')') > 0:
+                        ru = str.split(l[0], ',')
+                        register_user(int(ru[0][14:]), int(ru[1][:-1]))
+                    else:
+                        register_user(int(l[0][14:-1]), int(l[1][:-1]))
+
                 elif l[0].startswith('send_message'):
                     pass
+
                 elif l[0].startswith('read_message'):
                     pass
+
                 elif l[0].startswith('delete_message'):
                     pass
+
                 elif l[0].startswith('set_message_preview'):
                     pass
+
                 elif l[0].startswith('list_new_messages'):
                     pass
+
                 elif l[0].startswith('list_old_messages'):
                     pass
+
                 elif l[0] == 'list_groups':
                     pass
+
                 elif l[0] == 'list_users':
                     pass
+
                 else:
                     print("Not a valid command")
 

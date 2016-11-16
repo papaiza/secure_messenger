@@ -11,9 +11,9 @@ if sys.argv[1] == '-b':
                 l = str.split(line)
 
                 if l[0].startswith('add_user'):
-                    User(l[0][8:], l[1][:-1])
+                    User(int(l[0][9:-1]), l[1][:-1])
                 elif l[0].startswith('add_group'):
-                    pass
+                    Group(int(l[0][10:-1]), l[1][:-1])
                 elif l[0].startswith('register_user'):
                     pass
                 elif l[0].startswith('send_message'):

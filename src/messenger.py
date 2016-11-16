@@ -1,60 +1,77 @@
 import sys
 import os.path
-from user import User
-from group import Group, register_user
+from user import User, list_users
+from group import Group, register_user, list_groups
+
+
+def pretty_print(msg):
+    if msg == 'OK':
+        list_users()
+        list_groups()
+        # list_registrations()
+        # list_all_messages()
+        # list_new_messages()
+        # list_old_messages()
+
 
 if sys.argv[1] == '-b':
     if os.path.isfile(sys.argv[2]):
         with open(sys.argv[2]) as f:
             count = 0
-            print '{}:  OK'.format(count)
+            print '  {}:  OK\n'.format(count)
             content = f.readlines()
             for line in content:
                 count += 1
-                l = str.split(line)
+                start = line.find('(')
+                mid = line.find(',')
+                quote = line.find('"')
+                end = line.find(')')
+                tab = line.find('\t')
 
-                if l[0].startswith('add_user'):
+                if line[:start].startswith('add_user'):
                     print '->{}'.format(str.split(line, '\t')[0])
-                    user = User(int(l[0][9:-1]), l[1][:-1])
+                    user = User(int(line[start+1:mid]), line[quote: end])
                     print '  {}:  {}'.format(count, user.msg1)
-                    print '  {}'.format(user.msg2)
+                    # print '  {}'.format(user.msg2)
+                    pretty_print(user.msg1)
+                elif line[:start].startswith('add_group'):
+                    Group(int(line[start+1:mid]), line[quote: end])
 
-                elif l[0].startswith('add_group'):
-                    Group(int(l[0][10:-1]), l[1][:-1])
+                elif line[:start].startswith('register_user'):
+                    register_user(int(line[start+1:mid]), int(line[mid+1: end]))
 
-                elif l[0].startswith('register_user'):
-                    if l[0].find(')') > 0:
-                        ru = str.split(l[0], ',')
-                        register_user(int(ru[0][14:]), int(ru[1][:-1]))
-                    else:
-                        register_user(int(l[0][14:-1]), int(l[1][:-1]))
-
-                elif l[0].startswith('send_message'):
+                elif line[:start].startswith('send_message'):
                     pass
 
-                elif l[0].startswith('read_message'):
+                elif line[:start].startswith('read_message'):
                     pass
 
-                elif l[0].startswith('delete_message'):
+                elif line[:start].startswith('delete_message'):
                     pass
 
-                elif l[0].startswith('set_message_preview'):
+                elif line[:start].startswith('set_message_preview'):
                     pass
 
-                elif l[0].startswith('list_new_messages'):
+                elif line[:start].startswith('list_new_messages'):
                     pass
 
-                elif l[0].startswith('list_old_messages'):
+                elif line[:start].startswith('list_old_messages'):
                     pass
 
-                elif l[0] == 'list_groups':
-                    pass
+                elif line[:tab] == 'list_groups':
+                    print '->{}'.format(line[:tab])
+                    print '  {}:  OK'.format(count)
+                    list_groups()
 
-                elif l[0] == 'list_users':
-                    pass
+                elif line[:tab] == 'list_users':
+                    print '->{}'.format(line[:tab])
+                    print '  {}:  OK'.format(count)
+                    list_users()
 
                 else:
                     print("Not a valid command")
+
+
 
 
 # add_user		        (uid: UID; user_name: USER)

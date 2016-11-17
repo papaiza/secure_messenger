@@ -30,13 +30,14 @@ if sys.argv[1] == '-b':
 
                 if line[:start].startswith('add_user'):
                     print '->{}'.format(str.split(line, '\t')[0])
-                    user = User(int(line[start+1:mid]), line[quote: end])
-                    print '  {}:  {}'.format(count, user.msg1)
-                    # print '  {}'.format(user.msg2)
+                    user = User(int(line[start+1:mid]), line[quote: end], count)
                     pretty_print(user.msg1)
-                elif line[:start].startswith('add_group'):
-                    Group(int(line[start+1:mid]), line[quote: end])
 
+                elif line[:start].startswith('add_group'):
+                    print '->{}'.format(str.split(line, '\t')[0])
+                    group = Group(int(line[start+1:mid]), line[quote: end], count)
+                    pretty_print(group.msg1)
+                    
                 elif line[:start].startswith('register_user'):
                     register_user(int(line[start+1:mid]), int(line[mid+1: end]))
 

@@ -1,7 +1,7 @@
 import sys
 import os.path
-from user import User, list_users
-from group import Group, register_user, list_groups
+from user import User, list_users, all_users
+from group import Group, register_user, list_groups, all_groups
 
 
 def pretty_print(msg):
@@ -28,13 +28,13 @@ if sys.argv[1] == '-b':
                 end = line.find(')')
                 tab = line.find('\t')
 
+                print '->{}'.format(str.split(line, '\t')[0])
+
                 if line[:start].startswith('add_user'):
-                    print '->{}'.format(str.split(line, '\t')[0])
                     user = User(int(line[start+1:mid]), line[quote: end], count)
                     pretty_print(user.msg1)
 
                 elif line[:start].startswith('add_group'):
-                    print '->{}'.format(str.split(line, '\t')[0])
                     group = Group(int(line[start+1:mid]), line[quote: end], count)
                     pretty_print(group.msg1)
                     
@@ -60,18 +60,22 @@ if sys.argv[1] == '-b':
                     pass
 
                 elif line[:tab] == 'list_groups':
-                    print '->{}'.format(line[:tab])
                     print '  {}:  OK'.format(count)
-                    list_groups()
+                    if len(all_groups) > 0:
+                        list_groups()
+                    else:
+                        print '  There are no groups registered in the system yet.'
 
                 elif line[:tab] == 'list_users':
-                    print '->{}'.format(line[:tab])
                     print '  {}:  OK'.format(count)
-                    list_users()
+                    if len(all_users) > 0:
+                        list_users()
+                    else:
+                        print '  There are no users registered in the system yet.'
 
                 else:
                     print("Not a valid command")
-
+                print ""
 
 
 

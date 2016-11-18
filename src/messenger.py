@@ -1,14 +1,14 @@
 import sys
 import os.path
 from user import User, list_users, all_users
-from group import Group, register_user, list_groups, all_groups
+from group import Group, register_user, list_groups, all_groups, list_registers
 
 
 def pretty_print(msg):
     if msg == 'OK':
         list_users()
         list_groups()
-        # list_registrations()
+        list_registers()
         # list_all_messages()
         # list_new_messages()
         # list_old_messages()
@@ -39,7 +39,8 @@ if sys.argv[1] == '-b':
                     pretty_print(group.msg1)
                     
                 elif line[:start].startswith('register_user'):
-                    register_user(int(line[start+1:mid]), int(line[mid+1: end]))
+                    msg = register_user(int(line[start+1:mid]), int(line[mid+1: end]), count)
+                    pretty_print(msg)
 
                 elif line[:start].startswith('send_message'):
                     pass

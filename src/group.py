@@ -24,32 +24,38 @@ class Group:
             print '  {}'.format(self.msg2)
 
 
-def register_user(uid, gid):
-    if uid <= 0 or gid <= 0:
-        print "  ID must be a positive integer."
+def register_user(uid, gid, count):
 
-    # Check the IDs are valid and not 0
-    if uid in user.all_users.keys() and gid in all_groups.keys():
+    msg1 = 'ERROR'
+    msg2 = None
 
-        # Check the uid is not already registered for this group
-        if uid not in all_groups[gid].users.keys():
-            all_groups[gid].users[uid] = user.all_users[uid]
-        else:
-            print "  This registration already exists."
-    else:
-        print "  User with this ID does not exist."
+    if uid > 0 and gid > 0 and uid in user.all_users.keys() and gid in all_groups.keys() and uid not in all_groups[gid].users.keys():
+        msg1 = 'OK'
+        all_groups[gid].users[uid] = user.all_users[uid]
+    elif uid <= 0 or gid <= 0:
+        msg2 = "  ID must be a positive integer."
+    elif uid in all_groups[gid].users.keys():
+        msg2 = "  This registration already exists."
+    elif uid not in user.all_users.keys() or gid not in all_groups.keys():
+        msg2 = "  User with this ID does not exist."
+
+    print '  {}:  {}'.format(count, msg1)
+    if msg2 is not None:
+        print '  ' + msg2
+    return msg1
 
 
 def list_groups():
     print '  Groups:'
     sorted_keys = sorted(all_groups.keys())
     for key in sorted_keys:
-        print '  {}->{}'.format(key, all_groups[key].gname)
+        print '      {}->{}'.format(key, all_groups[key].gname)
 
 
 def list_registers():
+    print '  Registrations:'
     sorted_keys = sorted(all_groups.keys())
     for key in sorted_keys:
         sorted_users = sorted(all_groups[key].users.keys())
         for uid in sorted_users:
-            print '[{0},{1}]->{ {2}->{3}}'.format(uid, all_groups[key].users[uid].name, key, all_groups[key].gname)
+            print '      [{0},{1}]->'.format(uid, all_groups[key].users[uid].user_name) + '{' + '{0},{1}'.format(key, all_groups[key].gname) + '}'

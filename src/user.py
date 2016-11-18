@@ -28,6 +28,6 @@ def list_users():
     print '  Users:'
     sorted_keys = sorted(all_users.keys())
     for key in sorted_keys:
-        print '    {}->{}'.format(key, all_users[key].user_name)
+        print '      {}->{}'.format(key, all_users[key].user_name)
 
 

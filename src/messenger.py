@@ -30,34 +30,34 @@ if sys.argv[1] == '-b':
 
                 print '->{}'.format(str.split(line, '\t')[0])
 
-                if line[:start].startswith('add_user'):
+                if line[:start] == 'add_user':
                     user = User(int(line[start+1:mid]), line[quote: end], count)
                     pretty_print(user.msg1)
 
-                elif line[:start].startswith('add_group'):
+                elif line[:start] == 'add_group':
                     group = Group(int(line[start+1:mid]), line[quote: end], count)
                     pretty_print(group.msg1)
                     
-                elif line[:start].startswith('register_user'):
+                elif line[:start] == 'register_user':
                     msg = register_user(int(line[start+1:mid]), int(line[mid+1: end]), count)
                     pretty_print(msg)
 
-                elif line[:start].startswith('send_message'):
+                elif line[:start] == 'send_message':
                     pass
 
-                elif line[:start].startswith('read_message'):
+                elif line[:start] == 'read_message':
                     pass
 
-                elif line[:start].startswith('delete_message'):
+                elif line[:start] == 'delete_message':
                     pass
 
-                elif line[:start].startswith('set_message_preview'):
+                elif line[:start] == 'set_message_preview':
                     pass
 
-                elif line[:start].startswith('list_new_messages'):
+                elif line[:start] == 'list_new_messages':
                     pass
 
-                elif line[:start].startswith('list_old_messages'):
+                elif line[:start] == 'list_old_messages':
                     pass
 
                 elif line[:tab] == 'list_groups':

@@ -1,0 +1,13 @@
+% Exercises for Lab7
+% proveit --importchain --clean top.pvs
+
+top : THEORY
+BEGIN
+   IMPORTING Time
+   IMPORTING datatype0
+   IMPORTING stack_soln
+   IMPORTING SmallBank1
+   IMPORTING SmallBank2
+   IMPORTING BigBank1
+   IMPORTING BigBank2
+END top

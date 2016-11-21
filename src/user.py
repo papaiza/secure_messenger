@@ -10,6 +10,7 @@ class User:
         if uid > 0 and user_name != '""' and user_name[1].isalpha() and uid not in all_users.keys():
             self.uid = uid
             self.user_name = user_name[1:-1]
+            self.groups = {}
             all_users[uid] = self
             self.msg1 = 'OK'
 

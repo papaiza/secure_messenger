@@ -31,6 +31,7 @@ def register_user(uid, gid, count):
 
     if uid > 0 and gid > 0 and uid in user.all_users.keys() and gid in all_groups.keys() and uid not in all_groups[gid].users.keys():
         msg1 = 'OK'
+        user.all_users[uid].groups[gid] = all_groups[gid]
         all_groups[gid].users[uid] = user.all_users[uid]
     elif uid <= 0 or gid <= 0:
         msg2 = "  ID must be a positive integer."
@@ -58,4 +59,9 @@ def list_registers():
     for key in sorted_keys:
         sorted_users = sorted(all_groups[key].users.keys())
         for uid in sorted_users:
-            print '      [{0},{1}]->'.format(uid, all_groups[key].users[uid].user_name) + '{' + '{0},{1}'.format(key, all_groups[key].gname) + '}'
+            out = '      [{0},{1}]->'.format(uid, all_groups[key].users[uid].user_name) + '{'
+            sorted_regs = sorted(user.all_users[uid].groups.keys())
+            for reg in sorted_regs:
+                out += '{0}->{1}, '.format(reg, user.all_users[uid].groups[reg].gname)
+            out = out[:-2] + '}'
+            print out

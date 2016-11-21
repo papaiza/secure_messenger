@@ -7,7 +7,7 @@ class User:
     def __init__(self, uid, user_name, count):
         self.msg1 = 'ERROR'
         self.msg2 = None
-        if uid > 0 and user_name != '""' and user_name[1].isalpha() and id not in all_users.keys():
+        if uid > 0 and user_name != '""' and user_name[1].isalpha() and uid not in all_users.keys():
             self.uid = uid
             self.user_name = user_name[1:-1]
             all_users[uid] = self

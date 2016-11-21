@@ -2,7 +2,7 @@ import sys
 import os.path
 from user import User, list_users, all_users
 from group import Group, register_user, list_groups, all_groups, list_registers
-from message import Message, set_message_preview
+from message import Message, set_message_preview, list_messages
 
 
 def pretty_print(msg):
@@ -10,7 +10,7 @@ def pretty_print(msg):
         list_users()
         list_groups()
         list_registers()
-        # list_all_messages()
+        list_messages()
         # list_new_messages()
         # list_old_messages()
 
@@ -48,7 +48,8 @@ if sys.argv[1] == '-b':
                     from_id = int(line[start+1:mid])
                     to_id = int(line[mid+1: smid])
                     text = line[quote:end]
-                    message = Message(from_id, to_id, text)
+                    message = Message(from_id, to_id, text, count)
+                    pretty_print(message.msg1)
 
                 elif line[:start] == 'read_message':
                     # read_message(int(line[start+1:mid]), int(line[mid+1: end])

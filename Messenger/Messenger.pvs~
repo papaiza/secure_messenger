@@ -1,0 +1,136 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BigBank Based on records and with dependent typing using records
+% Add withdraw command to fix type correctness problem.
+% Then prove all the conjectures
+% Some hints are given as proveit strategies
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+BigBank2: THEORY
+BEGIN
+  delta: posreal % sampling time
+  IMPORTING Time[delta]
+  i: VAR DTIME
+ %Constants
+  n: posnat    % maximum number of id's
+  max: posreal % maximum balance allowed
+% Types
+  U_ID : TYPE = {id : posnat | id <= n} CONTAINING 1
+    % set of account id's
+  M_ID: TYPE = {id : posnat | id <= n} CONTAINING 1
+  G_ID:  TYPE = {id : posnat | id <= n} CONTAINING 1
+  STATUS   : TYPE = {ok, error}
+  NAME: TYPE+
+  TEXT: TYPE+
+  id : VAR ACC_ID
+
+% Monitored Events
+  COMMAND : DATATYPE
+    BEGIN
+      %nothing                           :nothing?
+      add_user(id:U_ID, n: NAME)			:add_user?
+      add_group(id:G_ID,n: NAME)			:add_group?
+      register_user(uid:U_ID,gid:G_ID)			:register_user?
+      send_message(uid:U_ID,gid:G_ID,txt:TEXT)		:send_message?
+      read_message(uid:U_ID,mid:M_ID)			:read_message?
+      delete_message(uid:U_ID,mid:M_ID)			:delete_message?
+      set_message_preview(n:INTEGER)			:set_message_preview?
+      list_new_messages(uid:U_ID)			:list_new_messages?
+      list_old_messages(uid:U_ID)			:list_old_messages?
+      list_groups					:list_groups?
+      list_users					:list_users?
+    END COMMAND
+  cmd: VAR [POS_DTIME -> COMMAND]
+
+% Abstract state using a record with dependent typing
+  STATE: TYPE =
+    [# accs :  set[ACC_ID]      % Accounts
+      ,name :  [(accs) -> NAME] % Names
+      ,bal  :  [(accs) -> real] % Balances
+    #]
+    
+  st : VAR [ DTIME -> STATE ]
+
+  % Definition of an empty function
+  emptyfun [T, U : TYPE] (x : {x : T | FALSE}) : RECURSIVE U = 
+    emptyfun(x) 
+    MEASURE (LAMBDA (x : {x : T | FALSE}): 1) 
+
+  init_state: STATE = 
+   (# accs := emptyset
+    ,  name := emptyfun 
+    ,  bal := emptyfun
+    #)
+
+    add_user_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
+    	COND
+
+	ENDCOND
+
+    add_group_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
+    	COND
+
+	ENDCOND
+
+    register_user_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
+    	COND
+
+	ENDCOND
+
+    send_message_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
+    	COND
+
+	ENDCOND
+
+    delete_message_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
+    	COND
+
+	ENDCOND
+
+    set_message_preview_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
+    	COND
+
+	ENDCOND
+
+    list_new_messages(id:U_ID)(st)(i:POS_DTIME): bool = 
+    	COND
+
+	ENDCOND
+
+    list_old_messages(id:U_ID)(st)(i:POS_DTIME): bool = 
+    	COND
+
+	ENDCOND
+
+    list_groups(st)(i:POS_DTIME): bool = 
+    	COND
+
+	ENDCOND
+
+    list_users(st)(i:POS_DTIME): bool = 
+    	COND
+
+	ENDCOND
+
+  % domain restriction
+  SET_ID : TYPE+ = set[ACC_ID]
+
+  messenger_ft(cmd) (st)(i) : bool =
+    COND
+      i = 0 -> st(0) = init_state,
+      i > 0 -> 
+        CASES cmd(i) OF
+	   add_user(uid,n)		:	add_user_ft(id,n)(st)(i),
+	   add_group(gid,n)		:	add_group_ft(id,n)(st)(i),
+    	   register_user(uid,gid)	:	register_user_ft(uid,gid)(st)(i),
+    	   send_message(uid,gid,txt)	:	send_message_ft(uid,gid,txt)(st)(i),
+           read_message(uid,mid)	:	read_message_ft(uid,mid)(st)(i),
+      	   delete_message(uid,mid)	:	delete_message_ft(uid,mid)(st)(i),
+      	   set_message_preview(n)	:	set_message_preview(n)(st)(i),
+	   list_new_messages(uid)	:	list_new_messages(uid)(st)(i),
+	   list_old_messages(uid)	:	list_old_messages(uid)(st)(i),
+	   list_groups			:	list_groups(st)(i),
+	   list_users			:	list_users(st)(i)
+        ENDCASES
+    ENDCOND
+
+END BigBank2

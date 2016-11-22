@@ -66,7 +66,8 @@ if sys.argv[1] == '-b':
                 elif line[:start] == 'set_message_preview':
                     print '->{}'.format(line[:end + 1])
                     n = int(line[start+1:end])
-                    set_message_preview(n)
+                    msg = set_message_preview(n, count)
+                    pretty_print(msg)
 
                 elif line[:start] == 'list_new_messages':
                     print '->{}'.format(line[:end + 1])

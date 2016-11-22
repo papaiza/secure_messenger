@@ -133,5 +133,14 @@ def list_old_messages(uid, count):
         print "  {}:  ERROR".format(count)
         print "  There are no new messages for this user."
 
-def set_message_preview(n):
-    Message.msg_preview = n
+
+def set_message_preview(n, count):
+    msg = 'ERROR'
+    if n <= 0:
+        print '  {}:  {}'.format(count, msg)
+        print '  Message length must be greater than zero.'
+    else:
+        msg = 'OK'
+        print '  {}:  {}'.format(count, msg)
+        Message.msg_preview = n
+    return msg

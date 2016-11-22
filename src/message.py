@@ -37,6 +37,32 @@ class Message:
             print '  {}'.format(self.msg2)
 
 
+def read_message(uid, mid, count):
+    msg = 'ERROR'
+    if uid > 0 and mid > 0 and mid in all_messages.keys() and uid in all_users.keys() and uid in all_messages[mid].unread_ids:
+        msg = 'OK'
+        all_messages[mid].unread_ids.remove(uid)
+        all_messages[mid].read_ids.append(uid)
+        all_users[uid].unread_messages.remove(mid)
+        all_users[uid].read_messages.append(mid)
+        print "  {}:  {}".format(count, msg)
+        print '  Message for user [{}, {}]: [{}, "{}"]'.format(uid, all_users[uid].user_name, mid, all_messages[mid].text)
+    elif uid <= 0 or mid <= 0:
+        print "  {}:  {}".format(count, msg)
+        print "  ID must be a positive integer."
+    elif mid not in all_messages.keys():
+        print "  {}:  {}".format(count, msg)
+        print "  Message with this ID does not exist."
+    elif uid not in all_users.keys():
+        print "  {}:  {}".format(count, msg)
+        print "  User with this ID does not exist."
+    elif uid not in all_messages[mid].unread_ids:
+        print "  {}:  {}".format(count, msg)
+        print "  Message has already been read. See `list_old_messages'."
+
+    return msg
+
+
 def list_messages():
     print '  All messages:'
     sorted_keys = sorted(all_messages.keys())

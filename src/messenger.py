@@ -29,21 +29,24 @@ if sys.argv[1] == '-b':
                 end = line.find(')')
                 tab = line.find('\t')
 
-                print '->{}'.format(str.split(line, '\t')[0])
 
                 if line[:start] == 'add_user':
+                    print '->{}'.format(line[:end+1])
                     user = User(int(line[start+1:mid]), line[quote: end], count)
                     pretty_print(user.msg1)
 
                 elif line[:start] == 'add_group':
+                    print '->{}'.format(line[:end + 1])
                     group = Group(int(line[start+1:mid]), line[quote: end], count)
                     pretty_print(group.msg1)
                     
                 elif line[:start] == 'register_user':
+                    print '->{}'.format(line[:end + 1])
                     msg = register_user(int(line[start+1:mid]), int(line[mid+1: end]), count)
                     pretty_print(msg)
 
                 elif line[:start] == 'send_message':
+                    print '->{}'.format(line[:end + 1])
                     smid = line.find(',', mid+1)
                     from_id = int(line[start+1:mid])
                     to_id = int(line[mid+1: smid])
@@ -52,24 +55,30 @@ if sys.argv[1] == '-b':
                     pretty_print(message.msg1)
 
                 elif line[:start] == 'read_message':
-                    # read_message(int(line[start+1:mid]), int(line[mid+1: end])
-                    pass
+                    print '->{}'.format(line[:end + 1])
+                    msg = read_message(int(line[start+1:mid]), int(line[mid+1: end]), count)
+                    pretty_print(msg)
                 elif line[:start] == 'delete_message':
+                    print '->{}'.format(line[:end + 1])
                     # delete_message(int(line[start+1:mid]), int(line[mid+1: end])
                     pass
 
                 elif line[:start] == 'set_message_preview':
+                    print '->{}'.format(line[:end + 1])
                     n = int(line[start+1:end])
                     set_message_preview(n)
 
                 elif line[:start] == 'list_new_messages':
+                    print '->{}'.format(str.split(line, ') ')[0])
                     list_new_messages(int(line[start+1:end]), count)
 
                 elif line[:start] == 'list_old_messages':
-                    # list_old_messages(int(line[start+1:end]))
+                    print '->{}'.format(str.split(line, ') ')[0])
+                    # list_old_messages(int(line[start+1:end]), count)
                     pass
 
                 elif line[:tab] == 'list_groups':
+                    print '->{}'.format(line[:line.find('ps') + 2])
                     print '  {}:  OK'.format(count)
                     if len(all_groups) > 0:
                         list_groups()
@@ -77,6 +86,7 @@ if sys.argv[1] == '-b':
                         print '  There are no groups registered in the system yet.'
 
                 elif line[:tab] == 'list_users':
+                    print '->{}'.format(line[:line.find('rs') + 2])
                     print '  {}:  OK'.format(count)
                     if len(all_users) > 0:
                         list_users()

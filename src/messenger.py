@@ -2,7 +2,7 @@ import sys
 import os.path
 from user import User, list_users, all_users
 from group import Group, register_user, list_groups, all_groups, list_registers
-from message import Message, set_message_preview, list_messages
+from message import Message, set_message_preview, list_messages, list_new_messages
 
 
 def pretty_print(msg):
@@ -11,7 +11,7 @@ def pretty_print(msg):
         list_groups()
         list_registers()
         list_messages()
-        # list_new_messages()
+        list_new_messages()
         # list_old_messages()
 
 

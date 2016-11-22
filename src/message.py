@@ -19,6 +19,8 @@ class Message:
             self.text = text[1:-1]
             self.read_ids = []
             self.unread_ids = [x for x in all_groups[to_id].users.keys() if not x == from_id]
+            for unread in self.unread_ids:
+                all_users[unread].unread_messages.append(Message.msg_id)
             all_messages[Message.msg_id] = self
             Message.msg_id += 1
         elif from_id <= 0 or to_id <= 0:
@@ -41,6 +43,21 @@ def list_messages():
     if len(all_messages) > 0:
         for key in sorted_keys:
             print '      {}->{}'.format(key, all_messages[key].text[:Message.msg_preview] + " ...")
+
+
+def list_new_messages():
+    print "  New messages:"
+    sorted_users = sorted(all_users.keys())
+    if len(all_users) > 0:
+        for key in sorted_users:
+            if len(all_users[key].unread_messages) > 0:
+                out = '      [{}, {}]->'.format(key, all_users[key].user_name) + '{'
+                sorted_messages = sorted(all_users[key].unread_messages)
+                for msg in sorted_messages:
+                    out += '{}, '.format(msg)
+                out = out[:-2] + '}'
+                print out
+
 
 
 def set_message_preview(n):

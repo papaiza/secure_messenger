@@ -11,6 +11,8 @@ class User:
             self.uid = uid
             self.user_name = user_name[1:-1]
             self.groups = {}
+            self.unread_messages = []
+            self.read_messages = []
             all_users[uid] = self
             self.msg1 = 'OK'
 

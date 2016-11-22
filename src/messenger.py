@@ -8,9 +8,9 @@ from message import *
 def pretty_print(msg):
     if msg == 'OK':
         print '  Users:'
-        list_users()
+        list_users_pp()
         print '  Groups:'
-        list_groups()
+        list_groups_pp()
         list_registers()
         list_messages()
         list_new()

@@ -9,7 +9,7 @@ class Message:
     msg_preview = 15
 
     def __init__(self, from_id, to_id, text, count):
-        self.msg1 = 'ERROR'
+        self.msg1 = 'ERROR '
         self.msg2 = None
 
         if from_id > 0 and to_id > 0 and text != '""' and (from_id in all_users.keys()) and (to_id in all_groups.keys()) and from_id in all_groups[to_id].users.keys():
@@ -38,7 +38,7 @@ class Message:
 
 
 def read_message(uid, mid, count):
-    msg = 'ERROR'
+    msg = 'ERROR '
     if uid > 0 and mid > 0 and mid in all_messages.keys() and uid in all_users.keys() and uid in all_messages[mid].unread_ids:
         msg = 'OK'
         all_messages[mid].unread_ids.remove(uid)
@@ -64,7 +64,7 @@ def read_message(uid, mid, count):
 
 
 def delete_message(uid, mid, count):
-    msg = 'ERROR'
+    msg = 'ERROR '
     if uid > 0 and mid > 0 and mid in all_messages.keys() and uid in all_users.keys() and uid in all_messages[mid].read_ids:
         msg = 'OK'
         all_messages[mid].read_ids.remove(uid)
@@ -85,12 +85,13 @@ def delete_message(uid, mid, count):
 
     return msg
 
+
 def list_messages():
     print '  All messages:'
     sorted_keys = sorted(all_messages.keys())
     if len(all_messages) > 0:
         for key in sorted_keys:
-            print '      {}->{}'.format(key, all_messages[key].text[:Message.msg_preview -1] + " ...")
+            print '      {}->{}'.format(key, all_messages[key].text[:Message.msg_preview] + " ...")
 
 
 def list_new():
@@ -129,13 +130,13 @@ def list_new_messages(uid, count):
         for msg in all_users[uid].unread_messages:
             print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview])
     elif uid <= 0:
-        print "  {}:  ERROR".format(count)
+        print "  {}:  ERROR ".format(count)
         print "  ID must be a positive integer."
     elif uid not in all_users.keys():
-        print "  {}:  ERROR".format(count)
+        print "  {}:  ERROR ".format(count)
         print "  User with this ID does not exist."
     elif len(all_users[uid].unread_messages) == 0:
-        print "  {}:  ERROR".format(count)
+        print "  {}:  OK".format(count)
         print "  There are no new messages for this user."
 
 
@@ -146,18 +147,18 @@ def list_old_messages(uid, count):
         for msg in all_users[uid].read_messages:
             print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview])
     elif uid <= 0:
-        print "  {}:  ERROR".format(count)
+        print "  {}:  ERROR ".format(count)
         print "  ID must be a positive integer."
     elif uid not in all_users.keys():
-        print "  {}:  ERROR".format(count)
+        print "  {}:  ERROR ".format(count)
         print "  User with this ID does not exist."
     elif len(all_users[uid].read_messages) == 0:
-        print "  {}:  ERROR".format(count)
-        print "  There are no new messages for this user."
+        print "  {}:  OK".format(count)
+        print "  There are no old messages for this user."
 
 
 def set_message_preview(n, count):
-    msg = 'ERROR'
+    msg = 'ERROR '
     if n <= 0:
         print '  {}:  {}'.format(count, msg)
         print '  Message length must be greater than zero.'

@@ -45,9 +45,10 @@ def register_user(uid, gid, count):
         print '  ' + msg2
     return msg1
 
+# TODO: Add function to list groups in alphabetical order
 
 def list_groups():
-    print '  Groups:'
+
     sorted_keys = sorted(all_groups.keys())
     for key in sorted_keys:
         print '      {}->{}'.format(key, all_groups[key].gname)
@@ -64,7 +65,7 @@ def list_registers():
     if registered:
         sorted_users = sorted(user.all_users.keys())
         for uid in sorted_users:
-            out = '      [{0},{1}]->'.format(uid, user.all_users[uid].user_name) + '{'
+            out = '      [{0}, {1}]->'.format(uid, user.all_users[uid].user_name) + '{'
             sorted_regs = sorted(user.all_users[uid].groups.keys())
             if len(sorted_regs) > 0:
                 for reg in sorted_regs:

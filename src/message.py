@@ -6,7 +6,7 @@ all_messages = {}
 
 class Message:
     msg_id = 1
-    msg_preview = 16
+    msg_preview = 15
 
     def __init__(self, from_id, to_id, text, count):
         self.msg1 = 'ERROR'
@@ -63,12 +63,34 @@ def read_message(uid, mid, count):
     return msg
 
 
+def delete_message(uid, mid, count):
+    msg = 'ERROR'
+    if uid > 0 and mid > 0 and mid in all_messages.keys() and uid in all_users.keys() and uid in all_messages[mid].read_ids:
+        msg = 'OK'
+        all_messages[mid].read_ids.remove(uid)
+        all_users[uid].read_messages.remove(mid)
+        print "  {}:  {}".format(count, msg)
+    elif uid <= 0 or mid <= 0:
+        print "  {}:  {}".format(count, msg)
+        print "  ID must be a positive integer."
+    elif mid not in all_messages.keys():
+        print "  {}:  {}".format(count, msg)
+        print "  Message with this ID does not exist."
+    elif uid not in all_users.keys():
+        print "  {}:  {}".format(count, msg)
+        print "  User with this ID does not exist."
+    elif uid not in all_messages[mid].read_ids:
+        print "  {}:  {}".format(count, msg)
+        print "  Message with this ID not found in old/read messages."
+
+    return msg
+
 def list_messages():
     print '  All messages:'
     sorted_keys = sorted(all_messages.keys())
     if len(all_messages) > 0:
         for key in sorted_keys:
-            print '      {}->{}'.format(key, all_messages[key].text[:Message.msg_preview ] + " ...")
+            print '      {}->{}'.format(key, all_messages[key].text[:Message.msg_preview -1] + " ...")
 
 
 def list_new():
@@ -105,7 +127,7 @@ def list_new_messages(uid, count):
         print "  {}:  OK".format(count)
         print "  New/unread messages for user [{}, {}]:".format(uid, all_users[uid].user_name)
         for msg in all_users[uid].unread_messages:
-            print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview ])
+            print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview])
     elif uid <= 0:
         print "  {}:  ERROR".format(count)
         print "  ID must be a positive integer."
@@ -122,7 +144,7 @@ def list_old_messages(uid, count):
         print "  {}:  OK".format(count)
         print "  Old/read messages for user [{}, {}]:".format(uid, all_users[uid].user_name)
         for msg in all_users[uid].read_messages:
-            print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview ])
+            print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview])
     elif uid <= 0:
         print "  {}:  ERROR".format(count)
         print "  ID must be a positive integer."

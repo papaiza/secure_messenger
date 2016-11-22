@@ -7,7 +7,9 @@ from message import *
 
 def pretty_print(msg):
     if msg == 'OK':
+        print '  Users:'
         list_users()
+        print '  Groups:'
         list_groups()
         list_registers()
         list_messages()
@@ -60,8 +62,8 @@ if sys.argv[1] == '-b':
 
                 elif line[:start] == 'delete_message':
                     print '->{}'.format(line[:end + 1])
-                    # delete_message(int(line[start+1:mid]), int(line[mid+1: end])
-                    pass
+                    msg = delete_message(int(line[start+1:mid]), int(line[mid+1: end]), count)
+                    pretty_print(msg)
 
                 elif line[:start] == 'set_message_preview':
                     print '->{}'.format(line[:end + 1])
@@ -76,7 +78,6 @@ if sys.argv[1] == '-b':
                 elif line[:start] == 'list_old_messages':
                     print '->{}'.format(line[:end + 1])
                     list_old_messages(int(line[start+1:end]), count)
-                    pass
 
                 elif line[:tab] == 'list_groups':
                     print '->{}'.format(line[:line.find('ps') + 2])

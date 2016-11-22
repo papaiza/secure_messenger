@@ -42,10 +42,10 @@ def list_messages():
     sorted_keys = sorted(all_messages.keys())
     if len(all_messages) > 0:
         for key in sorted_keys:
-            print '      {}->{}'.format(key, all_messages[key].text[:Message.msg_preview] + " ...")
+            print '      {}->{}'.format(key, all_messages[key].text[:Message.msg_preview ] + " ...")
 
 
-def list_new_messages():
+def list_new():
     print "  New messages:"
     sorted_users = sorted(all_users.keys())
     if len(all_users) > 0:
@@ -58,6 +58,23 @@ def list_new_messages():
                 out = out[:-2] + '}'
                 print out
 
+
+def list_new_messages(uid, count):
+
+    if uid > 0 and uid in all_users.keys() and len(all_users[uid].unread_messages) > 0:
+        print "  {}:  OK".format(count)
+        print "  New/unread messages for user [{}, {}]:".format(uid, all_users[uid].user_name)
+        for msg in all_users[uid].unread_messages:
+            print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview ])
+    elif uid <= 0:
+        print "  {}:  ERROR".format(count)
+        print "  ID must be a positive integer."
+    elif uid not in all_users.keys():
+        print "  {}:  ERROR".format(count)
+        print "  User with this ID does not exist."
+    elif len(all_users[uid].unread_messages) == 0:
+        print "  {}:  ERROR".format(count)
+        print "  There are no new messages for this user."
 
 
 def set_message_preview(n):

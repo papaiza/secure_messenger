@@ -56,12 +56,18 @@ def list_groups():
 def list_registers():
     print '  Registrations:'
     sorted_keys = sorted(all_groups.keys())
+    registered = False
     for key in sorted_keys:
-        sorted_users = sorted(all_groups[key].users.keys())
+        if len(all_groups[key].users.keys()) > 0:
+            registered = True
+            break
+    if registered:
+        sorted_users = sorted(user.all_users.keys())
         for uid in sorted_users:
-            out = '      [{0},{1}]->'.format(uid, all_groups[key].users[uid].user_name) + '{'
+            out = '      [{0},{1}]->'.format(uid, user.all_users[uid].user_name) + '{'
             sorted_regs = sorted(user.all_users[uid].groups.keys())
-            for reg in sorted_regs:
-                out += '{0}->{1}, '.format(reg, user.all_users[uid].groups[reg].gname)
-            out = out[:-2] + '}'
-            print out
+            if len(sorted_regs) > 0:
+                for reg in sorted_regs:
+                    out += '{0}->{1}, '.format(reg, user.all_users[uid].groups[reg].gname)
+                out = out[:-2] + '}'
+                print out

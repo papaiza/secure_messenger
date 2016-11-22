@@ -32,12 +32,12 @@ if sys.argv[1] == '-b':
                 tab = line.find('\t')
 
                 if line[:start] == 'add_user':
-                    print '->{}'.format(line[:end+1])
+                    print '->{}'.format(line[:mid+1] + line[quote:end+1])
                     user = User(int(line[start+1:mid]), line[quote: end], count)
                     pretty_print(user.msg1)
 
                 elif line[:start] == 'add_group':
-                    print '->{}'.format(line[:end + 1])
+                    print '->{}'.format(line[:mid + 1] + line[quote:end+1])
                     group = Group(int(line[start+1:mid]), line[quote: end], count)
                     pretty_print(group.msg1)
                     

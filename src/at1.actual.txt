@@ -8,15 +8,15 @@
   2:  OK
   There are no users registered in the system yet.
 
-->add_user(0, "aaa")
+->add_user(0,"aaa")
   3:  ERROR 
   ID must be a positive integer.
 
-->add_user(1, "")
+->add_user(1,"")
   4:  ERROR 
   User name must start with a letter.
 
-->add_user(1, "Dr. Dolittle")
+->add_user(1,"Dr. Dolittle")
   5:  OK
   Users:
       1->Dr. Dolittle
@@ -26,11 +26,11 @@
   New messages:
   Old/read messages:
 
-->add_user(1, "Dr. Lecter")
+->add_user(1,"Dr. Lecter")
   6:  ERROR 
   ID already in use.
 
-->add_user(2, "Dr. Frankenstein")
+->add_user(2,"Dr. Frankenstein")
   7:  OK
   Users:
       1->Dr. Dolittle
@@ -41,7 +41,7 @@
   New messages:
   Old/read messages:
 
-->add_user(3, "Dr. Rieux")
+->add_user(3,"Dr. Rieux")
   8:  OK
   Users:
       1->Dr. Dolittle
@@ -53,7 +53,7 @@
   New messages:
   Old/read messages:
 
-->add_user(4, "Dr. Higgins")
+->add_user(4,"Dr. Higgins")
   9:  OK
   Users:
       1->Dr. Dolittle
@@ -66,7 +66,7 @@
   New messages:
   Old/read messages:
 
-->add_user(5, "Florence Nightingale")
+->add_user(5,"Florence Nightingale")
   10:  OK
   Users:
       1->Dr. Dolittle
@@ -80,7 +80,7 @@
   New messages:
   Old/read messages:
 
-->add_user(6, "Mary Todd Lincoln")
+->add_user(6,"Mary Todd Lincoln")
   11:  OK
   Users:
       1->Dr. Dolittle
@@ -95,7 +95,7 @@
   New messages:
   Old/read messages:
 
-->add_user(7, "Helen Fairchild")
+->add_user(7,"Helen Fairchild")
   12:  OK
   Users:
       1->Dr. Dolittle
@@ -111,7 +111,7 @@
   New messages:
   Old/read messages:
 
-->add_user(8, "Office assistant")
+->add_user(8,"Office assistant")
   13:  OK
   Users:
       1->Dr. Dolittle
@@ -128,11 +128,11 @@
   New messages:
   Old/read messages:
 
-->add_group(0, "Doctors")
+->add_group(0,"Doctors")
   14:  ERROR 
   ID must be a positive integer.
 
-->add_group(1, "Doctors")
+->add_group(1,"Doctors")
   15:  OK
   Users:
       1->Dr. Dolittle
@@ -150,11 +150,11 @@
   New messages:
   Old/read messages:
 
-->add_group(1, "Nurses")
+->add_group(1,"Nurses")
   16:  ERROR 
   ID already in use.
 
-->add_group(2, "Nurses")
+->add_group(2,"Nurses")
   17:  OK
   Users:
       1->Dr. Dolittle
@@ -173,7 +173,7 @@
   New messages:
   Old/read messages:
 
-->add_group(3, "Staff")
+->add_group(3,"Staff")
   18:  OK
   Users:
       1->Dr. Dolittle
@@ -977,7 +977,7 @@
       2->Being a surgeon, I choose ...
       3->Let's run the idea by our ...
       4->Isn’t it a bit unnervin ...
-      5->Hey, I heard this! ...
+      5->Hey, I heard this!
       6->As to diseases, make a ha ...
   New messages:
       [1, Dr. Dolittle]->{2}

@@ -91,7 +91,10 @@ def list_messages():
     sorted_keys = sorted(all_messages.keys())
     if len(all_messages) > 0:
         for key in sorted_keys:
-            print '      {}->{}'.format(key, all_messages[key].text[:Message.msg_preview] + " ...")
+            if len(all_messages[key].text) <= Message.msg_preview:
+                print "      {}->{}".format(key, all_messages[key].text)
+            else:
+                print "      {}->{} ...".format(key, all_messages[key].text[:Message.msg_preview])
 
 
 def list_new():
@@ -128,7 +131,10 @@ def list_new_messages(uid, count):
         print "  {}:  OK".format(count)
         print "  New/unread messages for user [{}, {}]:".format(uid, all_users[uid].user_name)
         for msg in all_users[uid].unread_messages:
-            print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview])
+            if len(all_messages[msg].text) <= Message.msg_preview:
+                print "      {}->{}".format(msg, all_messages[msg].text)
+            else:
+                print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview])
     elif uid <= 0:
         print "  {}:  ERROR ".format(count)
         print "  ID must be a positive integer."
@@ -145,7 +151,10 @@ def list_old_messages(uid, count):
         print "  {}:  OK".format(count)
         print "  Old/read messages for user [{}, {}]:".format(uid, all_users[uid].user_name)
         for msg in all_users[uid].read_messages:
-            print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview])
+            if len(all_messages[msg].text) <= Message.msg_preview:
+                print "      {}->{}".format(msg, all_messages[msg].text)
+            else:
+                print "      {}->{} ...".format(msg, all_messages[msg].text[:Message.msg_preview])
     elif uid <= 0:
         print "  {}:  ERROR ".format(count)
         print "  ID must be a positive integer."

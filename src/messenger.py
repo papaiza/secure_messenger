@@ -12,7 +12,7 @@ def pretty_print(msg):
         list_registers()
         list_messages()
         list_new()
-        # list_old_messages()
+        list_old()
 
 
 if sys.argv[1] == '-b':
@@ -28,7 +28,6 @@ if sys.argv[1] == '-b':
                 quote = line.find('"')
                 end = line.find(')')
                 tab = line.find('\t')
-
 
                 if line[:start] == 'add_user':
                     print '->{}'.format(line[:end+1])
@@ -58,6 +57,7 @@ if sys.argv[1] == '-b':
                     print '->{}'.format(line[:end + 1])
                     msg = read_message(int(line[start+1:mid]), int(line[mid+1: end]), count)
                     pretty_print(msg)
+
                 elif line[:start] == 'delete_message':
                     print '->{}'.format(line[:end + 1])
                     # delete_message(int(line[start+1:mid]), int(line[mid+1: end])
@@ -69,12 +69,12 @@ if sys.argv[1] == '-b':
                     set_message_preview(n)
 
                 elif line[:start] == 'list_new_messages':
-                    print '->{}'.format(str.split(line, ') ')[0])
+                    print '->{}'.format(line[:end + 1])
                     list_new_messages(int(line[start+1:end]), count)
 
                 elif line[:start] == 'list_old_messages':
-                    print '->{}'.format(str.split(line, ') ')[0])
-                    # list_old_messages(int(line[start+1:end]), count)
+                    print '->{}'.format(line[:end + 1])
+                    list_old_messages(int(line[start+1:end]), count)
                     pass
 
                 elif line[:tab] == 'list_groups':

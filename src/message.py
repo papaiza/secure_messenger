@@ -4,8 +4,6 @@ from group import all_groups
 all_messages = {}
 
 
-
-
 class Message:
     msg_id = 1
     msg_preview = 16
@@ -20,7 +18,7 @@ class Message:
             self.to_id = to_id
             self.text = text[1:-1]
             self.read_ids = []
-            self.unread_ids = all_groups[to_id].users.keys()
+            self.unread_ids = [x for x in all_groups[to_id].users.keys() if not x == from_id]
             all_messages[Message.msg_id] = self
             Message.msg_id += 1
         elif from_id <= 0 or to_id <= 0:

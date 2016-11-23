@@ -27,11 +27,16 @@ class Message:
             self.msg2 = 'ID must be a positive integer.'
         elif text == '""':
             self.msg2 = 'A message may not be an empty string.'
+        elif from_id not in all_users.keys() or to_id not in all_groups.keys():
+            if from_id not in all_users.keys() and to_id not in all_groups.keys():
+                self.msg2 = 'User with this ID does not exist.\n'
+                self.msg2 += '  Group with this ID does not exist.'
+            elif from_id not in all_users.keys():
+                self.msg2 = 'User with this ID does not exist.'
+            elif to_id not in all_groups.keys():
+                self.msg2 = 'Group with this ID does not exist.'
         elif from_id not in all_groups[to_id].users.keys():
             self.msg2 = 'User not authorized to send messages to the specified group.'
-        elif from_id not in all_users.keys() or to_id not in all_groups.keys():
-            self.msg2 = 'ID does not exist.'
-
         print '  {}:  {}'.format(count, self.msg1)
         if self.msg2 is not None:
             print '  {}'.format(self.msg2)
@@ -56,7 +61,7 @@ def read_message(uid, mid, count):
     elif uid not in all_users.keys():
         print "  {}:  {}".format(count, msg)
         print "  User with this ID does not exist."
-    elif uid not in all_messages[mid].unread_ids:
+    elif uid not in all_messages[mid].unread_ids and uid in all_messages[mid].read_ids:
         print "  {}:  {}".format(count, msg)
         print "  Message has already been read. See `list_old_messages'."
 

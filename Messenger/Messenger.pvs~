@@ -1,11 +1,5 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BigBank Based on records and with dependent typing using records
-% Add withdraw command to fix type correctness problem.
-% Then prove all the conjectures
-% Some hints are given as proveit strategies
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-BigBank2: THEORY
+Messenger: THEORY
 BEGIN
   delta: posreal % sampling time
   IMPORTING Time[delta]
@@ -26,7 +20,6 @@ BEGIN
 % Monitored Events
   COMMAND : DATATYPE
     BEGIN
-      %nothing                           :nothing?
       add_user(id:U_ID, n: NAME)			:add_user?
       add_group(id:G_ID,n: NAME)			:add_group?
       register_user(uid:U_ID,gid:G_ID)			:register_user?
@@ -43,9 +36,12 @@ BEGIN
 
 % Abstract state using a record with dependent typing
   STATE: TYPE =
-    [# accs :  set[ACC_ID]      % Accounts
-      ,name :  [(accs) -> NAME] % Names
-      ,bal  :  [(accs) -> real] % Balances
+    [# user_ids	    : set[U_ID]      % Accounts
+      ,group_ids    : set[G_ID] % Names
+      ,message_ids  : set[M_ID]
+      ,user	    : [(user_ids) -> NAME]
+      ,group	    : [(group_ids) -> [set[U_ID,NAME]]
+      ,message	    : [[message_ids] -> [U_ID,G_ID,set[U_ID],set[U_ID],TEXT]] 	    
     #]
     
   st : VAR [ DTIME -> STATE ]
@@ -56,25 +52,58 @@ BEGIN
     MEASURE (LAMBDA (x : {x : T | FALSE}): 1) 
 
   init_state: STATE = 
-   (# accs := emptyset
-    ,  name := emptyfun 
-    ,  bal := emptyfun
+   (# user_ids 	    := emptyset
+    , group_ids	    := emptyset 
+    , message_ids   := emptyset
+    , user 	    := emptyfun
+    , group 	    := emptyfun
+    , message 	    := emptyfun
     #)
 
     add_user_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
     	COND
-
+		id > 0 ->
+		   COND
+			NOT st(i-1)`user_ids(id) ->
+			    st(i) = (# user_ids := add(id, user_ids_),
+			    	       user := user_ WITH [id := n]
+				     #),
+			st(i-1)`user_ids(id) -> st(i) = st(i-1)
+		   ENDCOND
+		id <= 0 -> st(i) = st(i-1)
 	ENDCOND
+	where
+		user_ids_ = st(i-1)`user_ids,
+		user_ = st(i-1)`user
 
     add_group_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
     	COND
-
+		id > 0 ->
+		   COND
+			NOT st(i-1)`group_ids(id) ->
+			    st(i) = (# group_ids := add(id, group_ids_),
+			    	       group := group_ WITH [id := [emptyset,n]]
+				     #),
+			st(i-1)`group_ids(id) -> st(i) = st(i-1)
+		   ENDCOND
+		id <= 0 -> st(i) = st(i-1)
 	ENDCOND
+	where
+		group_ids_ = st(i-1)`group_ids,
+		group_ = st(i-1)`group
 
-    register_user_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
+    register_user_ft(uid:U_ID,gid:G_ID)(st)(i:POS_DTIME): bool = 
     	COND
-
+		st(i-1)`user_ids(uid) AND st(i-1)`group_ids(gid) AND THIS USER DOESNT ALREADY BELONG TO THIS GROUP->
+				     COND
+					st(i) = (# group := group_ WITH [gid := [add(uid,old_set_users),old_name]] #)
+				     ENDCOND
+		NOT(st(i-1)`user_ids(id) AND st(i-1)`group_ids(id)) -> st(i) = st(i-1)		
 	ENDCOND
+	where
+		user_ids_ = st(i-1)`user_ids,
+		
+
 
     send_message_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
     	COND
@@ -133,4 +162,4 @@ BEGIN
         ENDCASES
     ENDCOND
 
-END BigBank2
+END Messenger

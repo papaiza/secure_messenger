@@ -1,3 +1,4 @@
+
 Messenger: THEORY
 BEGIN
   delta: posreal % sampling time
@@ -39,8 +40,8 @@ BEGIN
       ,group_ids    : set[G_ID] % Names
       ,message_ids  : set[M_ID]
       ,user	    : [(user_ids) -> NAME]
-      ,group	    : [(group_ids) -> NAME]
-      ,message	    : [[U_ID,G_ID] -> TEXT] 	    
+      ,group	    : [(group_ids) -> [set[U_ID],NAME]
+      ,message	    : [(message_ids) -> [U_ID,G_ID,set[U_ID],set[U_ID],TEXT]] 	    
     #]
     
   st : VAR [ DTIME -> STATE ]
@@ -61,20 +62,50 @@ BEGIN
 
     add_user_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
     	COND
-		
+		id > 0 ->
+		   COND
+			NOT st(i-1)`user_ids(id) ->
+			    st(i) = (# user_ids := add(id, user_ids_),
+			    	       user := user_ WITH [id := n]
+				     #),
+			st(i-1)`user_ids(id) -> st(i) = st(i-1)
+		   ENDCOND
+		id <= 0 -> st(i) = st(i-1)
 	ENDCOND
+	where
+		user_ids_ = st(i-1)`user_ids,
+		user_ = st(i-1)`user
 
     add_group_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
     	COND
-
+		id > 0 ->
+		   COND
+			NOT st(i-1)`group_ids(id) ->
+			    st(i) = (# group_ids := add(id, group_ids_),
+			    	       group := group_ WITH [id := [emptyset,n]]
+				     #),
+			st(i-1)`group_ids(id) -> st(i) = st(i-1)
+		   ENDCOND
+		id <= 0 -> st(i) = st(i-1)
 	ENDCOND
+	where
+		group_ids_ = st(i-1)`group_ids,
+		group_ = st(i-1)`group
 
-    register_user_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
+    register_user_ft(uid:U_ID,gid:G_ID)(st)(i:POS_DTIME): bool = 
     	COND
-
+		st(i-1)`user_ids(uid) AND st(i-1)`group_ids(gid) AND THIS USER DOESNT ALREADY BELONG TO THIS GROUP->
+				     COND
+					st(i) = (# group := group_ WITH [gid := [add(uid,old_set_users),old_name]] #)
+				     ENDCOND
+		NOT(st(i-1)`user_ids(id) AND st(i-1)`group_ids(id)) -> st(i) = st(i-1)		
 	ENDCOND
+	where
+		user_ids_ = st(i-1)`user_ids,
+		
 
-    send_message_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = 
+
+    send_message_ft(id:U_ID,n:NAME)(st)(i:POS_DTIME): bool = true
     	COND
 
 	ENDCOND

@@ -18,10 +18,10 @@ class User:
 
         elif uid <= 0:
             self.msg2 = 'ID must be a positive integer.'
-        elif user_name == '""' or not user_name[1].isalpha():
-            self.msg2 = 'User name must start with a letter.'
         elif uid in all_users.keys():
             self.msg2 = 'ID already in use.'
+        elif user_name == '""' or not user_name[1].isalpha():
+            self.msg2 = 'User name must start with a letter.'
         print '  {}:  {}'.format(count, self.msg1)
         if self.msg2 is not None:
             print '  {}'.format(self.msg2)

@@ -134,7 +134,7 @@
 
 ->add_group(2,"12a")
   15:  ERROR 
-  Group name must start with a letter.
+  ID already in use.
 
 ->add_group(2,"Players")
   16:  ERROR 

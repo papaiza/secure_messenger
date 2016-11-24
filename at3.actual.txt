@@ -97,7 +97,7 @@
 
 ->add_user(6,"12eff")
   12:  ERROR 
-  User name must start with a letter.
+  ID already in use.
 
 ->add_user(6,"Jeff")
   13:  ERROR 

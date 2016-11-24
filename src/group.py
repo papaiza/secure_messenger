@@ -15,10 +15,10 @@ class Group:
             all_groups[gid] = self
         elif gid <= 0:
             self.msg2 = 'ID must be a positive integer.'
-        elif gname == '""' or not gname[1].isalpha():
-            self.msg2 = 'Group name must start with a letter.'
         elif gid in all_groups.keys():
             self.msg2 = 'ID already in use.'
+        elif gname == '""' or not gname[1].isalpha():
+            self.msg2 = 'Group name must start with a letter.'
         print '  {}:  {}'.format(count, self.msg1)
         if self.msg2 is not None:
             print '  {}'.format(self.msg2)

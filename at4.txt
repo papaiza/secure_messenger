@@ -1,0 +1,16 @@
+list_users
+list_groups
+add_user(1, "Joe")
+add_user(2, "Dan")
+add_user(3, "Bob")
+add_user(4, "Jane")
+add_user(5, "Nancy")
+add_user(6, "Jen")
+add_group(1, "Friends")
+add_group(2, "Classmates")
+add_group(1, "Mates")
+add_group(-1, "Friends")
+add_group(-1, "12a")
+add_group(3, "12a")
+add_group(2, "12a")
+add_group(2, "Players")

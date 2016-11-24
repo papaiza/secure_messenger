@@ -1,0 +1,142 @@
+  0:  OK
+
+->list_users
+  1:  OK
+  There are no users registered in the system yet.
+
+->list_groups
+  2:  OK
+  There are no groups registered in the system yet.
+
+->add_user(1,"Joe")
+  3:  OK
+  Users:
+      1->Joe
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(2,"Dan")
+  4:  OK
+  Users:
+      1->Joe
+      2->Dan
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(3,"Bob")
+  5:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(4,"Jane")
+  6:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Jane
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(5,"Nancy")
+  7:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Jane
+      5->Nancy
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(6,"Jen")
+  8:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Jane
+      5->Nancy
+      6->Jen
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_group(1,"Friends")
+  9:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Jane
+      5->Nancy
+      6->Jen
+  Groups:
+      1->Friends
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_group(2,"Classmates")
+  10:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Jane
+      5->Nancy
+      6->Jen
+  Groups:
+      1->Friends
+      2->Classmates
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_group(1,"Mates")
+  11:  ERROR 
+  ID already in use.
+
+->add_group(-1,"Friends")
+  12:  ERROR 
+  ID must be a positive integer.
+
+->add_group(-1,"12a")
+  13:  ERROR 
+  ID must be a positive integer.
+
+->add_group(3,"12a")
+  14:  ERROR 
+  Group name must start with a letter.
+
+->add_group(2,"12a")
+  15:  ERROR 
+  Group name must start with a letter.
+
+->add_group(2,"Players")
+  16:  ERROR 
+  ID already in use.
+

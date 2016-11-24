@@ -1,0 +1,125 @@
+  0:  OK
+
+->list_users
+  1:  OK
+  There are no users registered in the system yet.
+
+->list_groups
+  2:  OK
+  There are no groups registered in the system yet.
+
+->add_user(1,"Joe")
+  3:  OK
+  Users:
+      1->Joe
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(2,"Dan")
+  4:  OK
+  Users:
+      1->Joe
+      2->Dan
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(3,"Bob")
+  5:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_group(1,"Friends")
+  6:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+  Groups:
+      1->Friends
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_group(2,"Classmates")
+  7:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+  Groups:
+      1->Friends
+      2->Classmates
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->register_user(-1, 2)
+  8:  ERROR 
+  ID must be a positive integer.
+
+->register_user(2, -1)
+  9:  ERROR 
+  ID must be a positive integer.
+
+->register_user(1, 1)
+  10:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+  Groups:
+      1->Friends
+      2->Classmates
+  Registrations:
+      [1, Joe]->{1->Friends}
+  All messages:
+  New messages:
+  Old/read messages:
+
+->register_user(2, 1)
+  11:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+  Groups:
+      1->Friends
+      2->Classmates
+  Registrations:
+      [1, Joe]->{1->Friends}
+      [2, Dan]->{1->Friends}
+  All messages:
+  New messages:
+  Old/read messages:
+
+->register_user(7, 1)
+  12:  ERROR 
+  User with this ID does not exist.
+
+->register_user(7, 5)
+  13:  ERROR 
+  User with this ID does not exist.
+
+->register_user(2, 5)
+  14:  ERROR 
+  Group with this ID does not exist.
+
+->register_user(1, 1)
+  15:  ERROR 
+  This registration already exists.
+

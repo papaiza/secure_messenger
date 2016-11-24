@@ -1,0 +1,13 @@
+list_users
+list_groups
+add_user(1, "Joe")
+add_user(2, "Dan")
+add_user(3, "Bob")
+add_user(4, "Jane")
+add_user(5, "Nancy")
+add_user(6, "Jen")
+add_user(-3, "Mo")
+add_user(-3, "12a")
+add_user(7, "12a")
+add_user(6, "12eff")
+add_user(6, "Jeff")

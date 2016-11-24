@@ -1,0 +1,15 @@
+list_users
+list_groups
+add_user(1, "Joe")
+add_user(2, "Dan")
+add_user(3, "Bob")
+add_group(1, "Friends")
+add_group(2, "Classmates")
+register_user(-1, 2)
+register_user(2, -1)
+register_user(1, 1)
+register_user(2, 1)
+register_user(7, 1)
+register_user(7, 5)
+register_user(2, 5)
+register_user(1, 1)

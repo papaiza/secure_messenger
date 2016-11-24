@@ -71,5 +71,4 @@
 ->send_message(3, 3, "Neither group nor user id")
   8:  ERROR 
   User with this ID does not exist.
-  Group with this ID does not exist.
 

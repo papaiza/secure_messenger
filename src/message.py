@@ -25,12 +25,12 @@ class Message:
             Message.msg_id += 1
         elif from_id <= 0 or to_id <= 0:
             self.msg2 = 'ID must be a positive integer.'
-        elif text == '""':
-            self.msg2 = 'A message may not be an empty string.'
         elif from_id not in all_users.keys():
             self.msg2 = 'User with this ID does not exist.'
         elif to_id not in all_groups.keys():
             self.msg2 = 'Group with this ID does not exist.'
+        elif text == '""':
+            self.msg2 = 'A message may not be an empty string.'
         elif from_id not in all_groups[to_id].users.keys():
             self.msg2 = 'User not authorized to send messages to the specified group.'
         print '  {}:  {}'.format(count, self.msg1)
@@ -40,7 +40,7 @@ class Message:
 
 def read_message(uid, mid, count):
     msg = 'ERROR '
-    if uid > 0 and mid > 0 and mid in all_messages.keys() and uid in all_users.keys() and uid in all_messages[mid].unread_ids:
+    if uid > 0 and mid > 0 and mid in all_messages.keys() and uid in all_users.keys() and uid in all_messages[mid].unread_ids and uid != all_messages[mid].from_id and uid in all_groups[all_messages[mid].to_id].users:
         msg = 'OK'
         all_messages[mid].unread_ids.remove(uid)
         all_messages[mid].read_ids.append(uid)
@@ -51,22 +51,27 @@ def read_message(uid, mid, count):
     elif uid <= 0 or mid <= 0:
         print "  {}:  {}".format(count, msg)
         print "  ID must be a positive integer."
-    elif mid not in all_messages.keys():
-        print "  {}:  {}".format(count, msg)
-        print "  Message with this ID does not exist."
     elif uid not in all_users.keys():
         print "  {}:  {}".format(count, msg)
         print "  User with this ID does not exist."
-    elif uid not in all_messages[mid].unread_ids and uid in all_messages[mid].read_ids:
+    elif mid not in all_messages.keys():
+        print "  {}:  {}".format(count, msg)
+        print "  Message with this ID does not exist."
+    elif uid in all_messages[mid].read_ids and uid not in all_messages[mid].unread_ids:
         print "  {}:  {}".format(count, msg)
         print "  Message has already been read. See `list_old_messages'."
-
+    elif uid == all_messages[mid].from_id:
+        print "  {}:  {}".format(count, msg)
+        print "  User can't read their own message."
+    elif uid not in all_groups[all_messages[mid].to_id].users:
+        print "  {}:  {}".format(count, msg)
+        print "  User not authorized to access this message."
     return msg
 
 
 def delete_message(uid, mid, count):
     msg = 'ERROR '
-    if uid > 0 and mid > 0 and mid in all_messages.keys() and uid in all_users.keys() and uid in all_messages[mid].read_ids:
+    if uid > 0 and mid > 0 and mid in all_messages.keys() and uid in all_users.keys() and uid in all_messages[mid].read_ids and uid != all_messages[mid].from_id and uid in all_groups[all_messages[mid].to_id].users:
         msg = 'OK'
         all_messages[mid].read_ids.remove(uid)
         all_users[uid].read_messages.remove(mid)
@@ -74,15 +79,21 @@ def delete_message(uid, mid, count):
     elif uid <= 0 or mid <= 0:
         print "  {}:  {}".format(count, msg)
         print "  ID must be a positive integer."
-    elif mid not in all_messages.keys():
-        print "  {}:  {}".format(count, msg)
-        print "  Message with this ID does not exist."
     elif uid not in all_users.keys():
         print "  {}:  {}".format(count, msg)
         print "  User with this ID does not exist."
+    elif mid not in all_messages.keys():
+        print "  {}:  {}".format(count, msg)
+        print "  Message with this ID does not exist."
+    elif uid == all_messages[mid].from_id:
+        print "  {}:  {}".format(count, msg)
+        print "  User can't read their own message."
     elif uid not in all_messages[mid].read_ids:
         print "  {}:  {}".format(count, msg)
         print "  Message with this ID not found in old/read messages."
+    elif uid not in all_groups[all_messages[mid].to_id].users:
+        print "  {}:  {}".format(count, msg)
+        print "  User not authorized to access this message."
 
     return msg
 

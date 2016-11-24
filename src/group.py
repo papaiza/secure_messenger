@@ -1,5 +1,4 @@
 import user
-import operator
 all_groups = {}
 
 
@@ -17,7 +16,7 @@ class Group:
         elif gid <= 0:
             self.msg2 = 'ID must be a positive integer.'
         elif gname == '""' or not gname[1].isalpha():
-            self.msg2 = 'User name must start with a letter.'
+            self.msg2 = 'Group name must start with a letter.'
         elif gid in all_groups.keys():
             self.msg2 = 'ID already in use.'
         print '  {}:  {}'.format(count, self.msg1)
@@ -36,10 +35,12 @@ def register_user(uid, gid, count):
         all_groups[gid].users[uid] = user.all_users[uid]
     elif uid <= 0 or gid <= 0:
         msg2 = "  ID must be a positive integer."
+    elif uid not in user.all_users.keys():
+        msg2 = "  User with this ID does not exist."
+    elif gid not in all_groups.keys():
+        msg2 = "  Group with this ID does not exist."
     elif uid in all_groups[gid].users.keys():
         msg2 = "  This registration already exists."
-    elif uid not in user.all_users.keys() or gid not in all_groups.keys():
-        msg2 = "  User with this ID does not exist."
 
     print '  {}:  {}'.format(count, msg1)
     if msg2 is not None:

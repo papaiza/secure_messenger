@@ -1,0 +1,527 @@
+
+messenger_prelude : THEORY
+BEGIN
+
+precond : TYPE = {precond}
+
+PRE (p : bool) : TYPE = { x : precond | p }
+
+UID, GID, MID, USER, GROUP, TEXT: TYPE+
+
+MSG_STATE : TYPE = {read,unread,unavailable}
+
+  % Definition of an empty function
+  emptyfun [T, U : TYPE] (x : {x : T | FALSE}) : RECURSIVE U = 
+    emptyfun(x) 
+    MEASURE 0
+
+
+END messenger_prelude
+
+insert [A,B,Z : TYPE,A2 : TYPE FROM A] : THEORY
+BEGIN
+
+   insertLeft (a: A, z:Z, f : [A2, B -> Z])(a0:(add(a,(A2_pred))),b:B) : Z =
+	   IF a = a0 THEN z
+	      	     ELSE f(a0,b)
+	   ENDIF
+   insertRight (b: A, z:Z, f : [B, A2 -> Z])(a:B,b0:(add(b,(A2_pred)))) : Z =
+	   IF b = b0 THEN z
+	      	     ELSE f(a,b0)
+	   ENDIF
+
+END insert
+
+message [U,G : TYPE] : THEORY
+BEGIN
+IMPORTING messenger_prelude
+
+  MSG_INFO: TYPE = 
+    [# 
+       sender : U
+     , recip: G
+     , content: TEXT
+       	  % sender is a member of the group the message
+	  % is sent to
+    #]
+END message
+
+message_reader [U,G,M : TYPE] : THEORY
+BEGIN
+IMPORTING messenger_prelude
+IMPORTING message
+
+   readership
+	   ( mem  : set[[U,G]]
+           , info : [ M -> MSG_INFO[U,G] ] )
+           ( u : U, m : M ) : bool =
+      mem(u,info(m)`recip)
+  % a set of pairs (user, message) such that user is allowed
+  % to read the message
+
+END message_reader
+
+messenger : THEORY
+ 
+BEGIN
+delta: posreal % sampling time
+IMPORTING Time[delta]
+IMPORTING message_reader
+IMPORTING insert
+i: VAR DTIME
+
+STATE: TYPE =
+
+  [# 
+    users: set[UID]
+   ,names: [ (users) -> USER ]
+   ,groups: set[GID]
+   ,gname: [ (groups) -> GROUP ]
+   ,msgs: set[MID]
+   ,membership: set[[(users),(groups)]]
+   ,info : [(msgs) -> MSG_INFO[(users),(groups)]]
+   	 % specification of individual messages
+   ,ms : [ [(users),(msgs)] -> MSG_STATE ]
+         % message state: for every message and every user that can read it
+	 % a message can either be unread, read or deleted
+  #]
+
+OUTPUT : DATATYPE
+  BEGIN
+    OK: OK?
+    error: error?
+    list_msg (id: UID,ms: set[MID]): list_msg?
+    show_msg (id: UID,msg:MID,txt: TEXT): show_msg?
+  END OUTPUT
+
+empty_tuples_are_empty : THEOREM
+      FORALL (x2: [(emptyset[UID]), (emptyset[MID])]): FALSE
+
+%|- empty_tuples_are_empty : PROOF
+%|- (then (skeep) (typepred "x2`1") (expand "emptyset") (propax))
+%|- QED
+
+msgOf (st : STATE, u : (st`users))(m : MID): bool = 
+      st`msgs(m) AND st`membership(u,st`info(m)`recip)
+
+msgAccess (st : STATE, u : (st`users), g : (st`groups))(q :(st`users)): bool = 
+       NOT q = u AND st`membership(q,g)
+
+msgAccess (st : STATE, u: (st`users) ,m : (st`msgs))(q :(st`users)):bool =  
+						  
+			      	  	 	   	      COND  
+							      	    mem_(q,info_(m)`recip) AND u = q ->	st`ms = ms_ WITH [(q,m) := read],
+			      	  	 	    	      	    mem_(q,info_(m)`recip) AND u /= q -> 	st`ms =  ms_ WITH [(q,m) := unread],
+							  	    NOT mem_(q,info_(m)`recip) ->   	 	st`ms =  ms_ WITH [(q,m) := unavailable]			      	  	 	    	  
+			      	  	 		      ENDCOND
+							       WHERE
+   							           users_   = st`users
+								   , gname_   = st`gname
+								   , info_    = st`info
+								   , mem_  = st`membership
+								   , ms_   = st`ms
+								   , msgs_ = st`msgs
+								   , groups_ = st`groups
+
+
+init_state : STATE =
+  (# users := emptyset 
+   , names := emptyfun
+   , groups := emptyset 
+   , gname := emptyfun
+   , msgs := emptyset
+   , membership := emptyset 
+   , info := emptyfun[(emptyset[MID]), MSG_INFO[(emptyset[UID]),(emptyset[GID])]]
+   , ms := emptyfun[[(emptyset[UID]),(emptyset[MID])],MSG_STATE] 
+   #)
+st : VAR [DTIME -> STATE]
+output: VAR [DTIME -> OUTPUT]
+u,u2  : VAR UID
+un : VAR USER
+gn : VAR GROUP
+txt : VAR TEXT
+g,g2  : VAR GID
+m,m1,m2 : VAR MID
+
+add_user (id: UID, name: USER)(st,output)(i : POS_DTIME) : bool = 
+  COND users_(id) -> output(i) = error AND st(i) = st(i-1)
+     , NOT users_(id) ->
+       	     st(i) = st(i-1) WITH
+  	     	   [ users := add(id, users_) 
+		   , names := names_ WITH [id := name] 
+		   , membership := insertLeft(id,FALSE,mem_)
+		   , ms   :=  insertLeft(id,unavailable,ms_)
+		   ]
+	AND output(i) = OK
+  ENDCOND
+   WHERE
+       users_   = st(i-1)`users
+     , newUsers = add(id,users_)
+     , names_   = st(i-1)`names
+     , info_    = st(i-1)`info
+     , mem_  = st(i-1)`membership
+     , ms_   = st(i-1)`ms
+     , msgs_ = st(i-1)`msgs
+
+     , groups_ = st(i-1)`groups
+
+add_group (id: GID, name: GROUP)(st,output)(i : POS_DTIME) : bool = 
+  COND groups_(id) -> output(i) = error AND st(i) = st(i-1)
+     , NOT groups_(id) ->
+       	     st(i) = st(i-1) WITH
+  	     	   [ groups := add(id, groups_) 
+		   , gname := gname_ WITH [id := name] 
+		   , membership := insertRight(id,FALSE,mem_)
+		   ]
+	AND output(i) = OK
+  ENDCOND
+   WHERE
+       users_   = st(i-1)`users
+     , gname_   = st(i-1)`gname
+     , info_    = st(i-1)`info
+     , mem_  = st(i-1)`membership
+     , ms_   = st(i-1)`ms
+     , msgs_ = st(i-1)`msgs
+     , groups_ = st(i-1)`groups
+
+
+
+register_user (u: UID, g: GID)(st,output)(i : POS_DTIME) : bool =
+     COND users_(u) AND groups_(g) AND NOT mem_(u,g) -> 
+     	  	    st(i) = st(i-1) WITH
+		    	    [ membership := add((u,g),mem_) 
+			    , ms := insertLeft(u,unavailable,ms_) 
+			    ] 
+		AND output(i) = OK
+	,    NOT users_(u) 
+	  OR NOT groups_(g) 
+	  OR mem_(u,g) 
+	-> st(i) = st(i-1) AND output(i) = error
+     ENDCOND
+   WHERE
+       users_   = st(i-1)`users
+     , names_   = st(i-1)`names
+     , info_    = st(i-1)`info
+     , mem_  = st(i-1)`membership
+     , ms_   = st(i-1)`ms
+     , msgs_ = st(i-1)`msgs
+     , groups_ = st(i-1)`groups
+
+     % check whether we are allowed to read the message
+     % change the state of the message to `read`
+     % output the message content
+     % to read a message, it must be in the state unread for that user in the prestate
+read_message (u, m)(st,output)(i : POS_DTIME) : bool = 
+     COND users_(u) AND msgs_(m) AND mem_(u,info_(m)`recip) AND ms_(u,m) = unread    -> 
+     	  	    st(i) = st(i-1) WITH
+		    	  [ ms := ms_ WITH [ (u,m) := read ] ]
+	            AND output(i) = show_msg(u,m,info_(m)`content)
+       ,  NOT users_(u) OR NOT msgs_(m) OR NOT mem_(u,info_(m)`recip)  OR NOT ms_(u,m) = unread   ->     st(i) = st(i-1)
+          AND output(i) = error
+     ENDCOND
+   WHERE
+       users_   = st(i-1)`users
+     , names_   = st(i-1)`names
+     , info_    = st(i-1)`info
+     , mem_  = st(i-1)`membership
+     , ms_   = st(i-1)`ms
+     , msgs_ = st(i-1)`msgs
+     , groups_ = st(i-1)`groups
+
+delete_message (u, m)(st,output)(i : POS_DTIME) : bool = 
+     COND users_(u) AND msgOf(st(i-1),u)(m) -> 
+     	  	    st(i) = st(i-1) WITH
+		    	  [ ms := ms_ WITH [ (u,m) := unavailable ] ]
+	        AND output(i) = OK
+       ,     NOT users_(u) OR NOT msgOf(st(i-1),u)(m)       ->     st(i) = st(i-1)
+             AND output(i) = error
+     ENDCOND
+   WHERE
+       users_   = st(i-1)`users
+     , names_   = st(i-1)`names
+     , info_    = st(i-1)`info
+     , mem_  = st(i-1)`membership
+     , ms_   = st(i-1)`ms
+     , msgs_ = st(i-1)`msgs
+     , groups_ = st(i-1)`groups
+
+   % Allocate a fresh message id and give access to the authorized users.
+   % This message's state is 'unread' for all user of the group except 
+   % for the sender. The state must be set to 'read' for the sender.
+
+
+send_message (u:UID,g:GID,txt: TEXT)(st,output)(i : POS_DTIME) : bool = 
+
+      EXISTS (m:MID) : NOT member(m,st(i-1)`msgs) AND
+      COND users_(u) AND groups_(g) AND mem_(u,g)  -> 
+
+	     FORALL (q:(users_)): 
+	     	    COND	
+				mem_(q,g) -> 
+					  COND
+						 q = u  ->  st(i) = st(i-1) WITH
+			    	    	  	     	    [ msgs := add(m, msgs_)
+			   		  		    , info := info_ WITH  [m :=	 (# sender := u
+						    	      	      	    	   	   ,recip := g
+									   		   ,content := txt #)  ]
+			 		  		    ,ms := ms_ WITH [(q,m) := read] ]  AND output(i) = OK,
+						q /= u ->  st(i) = st(i-1) WITH
+			    	    	 	       	    [ msgs := add(m, msgs_)
+			   		  		    , info := info_ WITH  [m :=	 (# sender := u
+						    	  	   	    	     	    ,recip := g
+									  		    ,content := txt #)  ]
+			 		  
+							    ,ms := ms_ WITH [(q,m) := unread] ] AND output(i) = OK
+					  ENDCOND
+				,NOT mem_(q,g) ->  st(i) = st(i-1) WITH
+			    	    	  [ msgs := add(m, msgs_)
+			   		  , info := info_ WITH  [m :=	 (# sender := u
+						    	  	   	   ,recip := g
+									   ,content := txt #)  ]
+					  ,ms := ms_ WITH [(q,m) := unavailable]	      	  	 	    
+			  		  ] AND output(i) = OK	
+     		  ENDCOND   
+	     , NOT users_(u) OR NOT groups_(g) OR NOT mem_(u,g) ->     st(i) = st(i-1)  AND output(i) = error
+    	 ENDCOND
+   WHERE
+       users_   = st(i-1)`users
+     , names_   = st(i-1)`names
+     , info_    = st(i-1)`info
+     , mem_  = st(i-1)`membership
+     , ms_   = st(i-1)`ms
+     , msgs_ = st(i-1)`msgs
+     , groups_ = st(i-1)`groups  
+
+
+list_new_messages (u: UID)(st,output)(i:POS_DTIME): bool =
+    st(i) = st(i-1) AND
+    COND users_(u) -> output(i) = list_msg(u, {m : (msgOf(st(i-1),u)) | ms_(u,m) = unread})
+       , NOT users_(u) -> output(i) = error 
+    ENDCOND
+   WHERE
+       users_   = st(i-1)`users
+     , names_   = st(i-1)`names
+     , info_    = st(i-1)`info
+     , mem_  = st(i-1)`membership
+     , ms_   = st(i-1)`ms
+     , msgs_ = st(i-1)`msgs
+     , groups_ = st(i-1)`groups
+
+list_old_messages (u: UID)(st,output)(i:POS_DTIME): bool =
+    st(i) = st(i-1) AND
+    COND users_(u) -> output(i) = list_msg(u, {m : (msgOf(st(i-1),u)) | ms_(u,m) = read})
+       , NOT users_(u) -> output(i) = error 
+    ENDCOND
+   WHERE
+       users_   = st(i-1)`users
+     , names_   = st(i-1)`names
+     , info_    = st(i-1)`info
+     , mem_  = st(i-1)`membership
+     , ms_   = st(i-1)`ms
+     , msgs_ = st(i-1)`msgs
+     , groups_ = st(i-1)`groups
+
+command : DATATYPE
+  BEGIN
+    nothing: nothing?
+    e_add_user(u:UID,un:USER): add_user?
+    e_add_group(g:GID,gn:GROUP): add_group?
+    e_register(u:UID,g:GID): register_user?
+    e_send(u:UID,g:GID,txt:TEXT): send_message?
+    e_read(u:UID,m:MID): read_message?
+    e_delete(u:UID,m:MID): delete_message?
+    e_list_new(u:UID): list_new_message?
+    e_list_old(u:UID): list_old_message?
+  END command
+
+cmd: VAR [POS_DTIME -> command]
+
+messenger_ft (cmd,st,output)(i: DTIME): bool = 
+   COND i = 0 -> st(i) = init_state AND output(i) = OK
+      , i > 0 -> CASES cmd(i) OF
+      	      	   nothing:	      st(i) = st(i-1) AND output(i) = output(i-1)
+       	      	 , e_add_user(u,un):  add_user(u,un)        (st,output)(i)
+		 , e_add_group(g,gn): add_group(g,gn)       (st,output)(i)
+		 , e_register(u,g):   register_user(u,g)    (st,output)(i)
+		 , e_send(u,g,txt):   send_message(u,g,txt) (st,output)(i)
+		 , e_read(u,m):	      read_message(u,m)     (st,output)(i)
+		 , e_delete(u,m):     delete_message(u,m)   (st,output)(i)
+		 , e_list_new(u):     list_new_messages(u)  (st,output)(i)
+		 , e_list_old(u):     list_old_messages(u)  (st,output)(i)
+		 ENDCASES
+   ENDCOND
+
+     % When listing messages (either the new messages or the new messages),
+     % this property asserts that
+     %   0. it is requested by a valid user
+     %   1. the user has access to all the returned messages
+list_message_privacy(st: STATE,output: OUTPUT): bool =
+     list_msg?(output) IMPLIES st`users(id(output)) AND subset?(ms(output), msgOf(st,id(output)))
+
+     % When showing a message, this property asserts that
+     %   0. it is requested by a valid user
+     %   1. the user has access to the requested message
+     %   2. the displayed text is actually the body of the message
+show_message_privacy(st: STATE,output: OUTPUT): bool =
+     show_msg?(output) IMPLIES 
+              st`users(id(output)) 
+	  AND msgOf(st,id(output))(msg(output))
+	  AND st`info(msg(output))`content = txt(output)
+
+    % If we ignore the case where the user can do "nothing", we can
+    % show (without induction) that list_message and show_message
+    % do not leak private information.
+privacy_weak : THEOREM
+   FORALL (i: DTIME): messenger_ft(cmd,st,output)(i) AND (i = 0 OR cmd(i) /= nothing)
+         IMPLIES 
+      	     list_message_privacy(st(i),output(i))
+	 AND show_message_privacy(st(i),output(i))
+
+    % Like privacy_weak except that we account for doing "nothing"
+    % This requires induction.
+privacy : THEOREM 
+        (FORALL (i: DTIME): messenger_ft(cmd,st,output)(i))
+  IMPLIES FORALL (i: DTIME):
+      	     list_message_privacy(st(i),output(i))
+	 AND show_message_privacy(st(i),output(i))
+
+%|- privacy : PROOF
+%|- (then (skeep)
+%|-  (spread (induct i)
+%|-   ((then (inst -1 0) (grind)) (then (inst -1 0) (grind))
+%|-    (then (skeep) (inst -3 "j+1") (grind)))))
+%|- QED
+
+inv1 (s : STATE) : bool = FORALL (u:(s`users),m:(s`msgs)): 
+   	   	      s`ms(u,m) /= unavailable IMPLIES readership((s`membership),(s`info))(u,m)
+inv2 (s : STATE) : bool = FORALL (m:(s`msgs)): s`membership( s`info(m)`sender,s`info(m)`recip )
+
+inv1_send : THEOREM 
+	  i > 0
+      AND send_message (u,g,txt)(st,output)(i) AND inv1(st(i-1))
+   IMPLIES inv1(st(i))
+
+inv2_send : THEOREM 
+	  i > 0
+      AND send_message (u,g,txt)(st,output)(i) AND inv2(st(i-1))
+   IMPLIES inv2(st(i))
+
+inv1_read : THEOREM 
+	  i > 0
+     AND  read_message (u,m)(st,output)(i) AND inv1(st(i-1))
+   IMPLIES inv1(st(i))
+
+inv2_read : THEOREM 
+	  i > 0
+     AND  read_message (u,m)(st,output)(i) AND inv2(st(i-1))
+   IMPLIES inv2(st(i))
+
+inv1_holds : THEOREM 
+    (FORALL (i: DTIME): messenger_ft(cmd,st,output)(i))
+    IMPLIES (FORALL (i: DTIME): inv1(st(i)))
+
+inv2_holds : THEOREM 
+    (FORALL (i: DTIME): messenger_ft(cmd,st,output)(i))
+    IMPLIES (FORALL (i: DTIME): inv2(st(i)))
+
+END messenger
+
+use_cases : THEORY
+BEGIN
+
+IMPORTING messenger
+
+n1,n2 : USER
+% Existence TCC generated (at line 352, column 0) for  n1: USER
+  % unfinished
+%n1_TCC1: OBLIGATION EXISTS (x: USER): TRUE;
+gn1,gn2 : GROUP
+g1 : GID
+u1,u3 : UID
+t1,t2: TEXT
+cmd : [POS_DTIME -> command]
+st : [DTIME -> STATE]
+output : [DTIME -> OUTPUT]
+i : VAR DTIME
+
+distinct_users : AXIOM
+  u1 /= u3
+
+post_st6(s : STATE) : bool = 
+	         NOT s`users(u3) 
+	      OR NOT s`groups(g1) 
+	      OR NOT s`membership(u3,g1)
+
+use_case1 : bool = 
+        (FORALL i: messenger_ft(cmd,st,output)(i))
+    AND cmd(1) = e_add_user(u1,n1)
+    AND cmd(2) = e_add_group(g1,gn1)
+    AND cmd(3) = e_register(u1,g1)
+    AND cmd(4) = e_send(u1,g1,t1)
+    AND cmd(5) = e_add_user(u3,n2)
+    AND cmd(6) = e_send(u3,g1,t2)
+
+uc1_state_0 : LEMMA
+       use_case1 IMPLIES post_st6(st(0))
+
+uc1_state_1 : LEMMA
+       	       use_case1 
+       IMPLIES post_st6(st(1))
+           AND st(1)`users(u1)
+
+uc1_state_2 : LEMMA
+       	       use_case1 
+       IMPLIES post_st6(st(2))
+           AND st(2)`users(u1)
+	   AND st(2)`groups(g1)
+
+uc1_state_3 : LEMMA
+       	       use_case1 
+       IMPLIES post_st6(st(3))
+           AND st(3)`users(u1)
+	   AND st(3)`groups(g1)
+	   AND st(3)`membership(u1,g1)
+
+uc1_state_4 : LEMMA
+       	       use_case1 
+       IMPLIES post_st6(st(4))
+           AND st(4)`users(u1)
+	   AND st(4)`groups(g1)
+	   AND st(4)`membership(u1,g1)
+	   AND NOT empty?(msgOf(st(4),u1))
+
+uc1_state_5 : LEMMA
+       	       use_case1 
+       IMPLIES post_st6(st(5))
+
+uc1_state_6 : LEMMA
+       	       use_case1 
+       IMPLIES output(6) = error
+
+% state 0: post_st6
+% state 1: post_st6
+%      AND users(u1)
+% state 2: post_st6
+%      AND users(u1) AND groups(g1)
+% state 3: post_st6
+%      AND membership(u1,g1)
+%      AND users(u1) AND groups(g1)
+% state 4: 
+%          post_st6
+%      AND output(4) = OK
+%      AND membership(u1,g1)
+%      AND NOT empty?(msgOf(u1))
+% state 5: post_st6
+% state 6: output = error
+
+use_case1_correct : THEOREM 
+        use_case1
+    IMPLIES
+        output(4) = OK
+    AND st(4)`users(u1)
+    AND st(4)`groups(g1)
+    AND st(4)`membership(u1,g1)
+    AND NOT empty?(msgOf(st(4),u1))
+    AND output(6) = error
+
+END use_cases

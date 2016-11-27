@@ -253,34 +253,19 @@ delete_message (u, m)(st,output)(i : POS_DTIME) : bool =
 send_message (u:UID,g:GID,txt: TEXT)(st,output)(i : POS_DTIME) : bool = 
 
       EXISTS (m:MID) : NOT member(m,st(i-1)`msgs) AND
-      COND users_(u) AND groups_(g) AND mem_(u,g)  -> 
-
+      COND users_(u) AND groups_(g) AND mem_(u,g)  -> st(i) = st(i-1) AND 
 	     FORALL (q:(users_)): 
-	     	    COND	
-				mem_(q,g) -> 
-					  COND
-						 q = u  ->  st(i) = st(i-1) WITH
-			    	    	  	     	    [ msgs := add(m, msgs_)
+	     	    
+			IF st(i) = st(i-1) THEN 
+			  st(i) = st(i-1) WITH	     [ msgs := add(m, msgs_)
 			   		  		    , info := info_ WITH  [m :=	 (# sender := u
 						    	      	      	    	   	   ,recip := g
 									   		   ,content := txt #)  ]
-			 		  		    ,ms := ms_ WITH [(q,m) := read] ]  AND output(i) = OK,
-						q /= u ->  st(i) = st(i-1) WITH
-			    	    	 	       	    [ msgs := add(m, msgs_)
-			   		  		    , info := info_ WITH  [m :=	 (# sender := u
-						    	  	   	    	     	    ,recip := g
-									  		    ,content := txt #)  ]
-			 		  
-							    ,ms := ms_ WITH [(q,m) := unread] ] AND output(i) = OK
-					  ENDCOND
-				,NOT mem_(q,g) ->  st(i) = st(i-1) WITH
-			    	    	  [ msgs := add(m, msgs_)
-			   		  , info := info_ WITH  [m :=	 (# sender := u
-						    	  	   	   ,recip := g
-									   ,content := txt #)  ]
-					  ,ms := ms_ WITH [(q,m) := unavailable]	      	  	 	    
-			  		  ] AND output(i) = OK	
-     		  ENDCOND   
+			 		  		    ,ms := ms_ WITH [(q,m) := IF u = q THEN read ELSE IF mem_(q,g) THEN unread ELSE unavailable ENDIF ENDIF] ]  AND output(i) = OK
+			ELSE 		      
+			    st(i) = st(i) WITH	     [ms := ms_ WITH [(q,m) := IF u = q THEN read ELSE IF mem_(q,g) THEN unread ELSE unavailable ENDIF ENDIF] ]  AND output(i) = OK
+			ENDIF
+     		   
 	     , NOT users_(u) OR NOT groups_(g) OR NOT mem_(u,g) ->     st(i) = st(i-1)  AND output(i) = error
     	 ENDCOND
    WHERE

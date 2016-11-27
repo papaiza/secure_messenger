@@ -254,50 +254,18 @@ send_message (u:UID,g:GID,txt: TEXT)(st,output)(i : POS_DTIME) : bool =
 
       EXISTS (m:MID) : NOT member(m,st(i-1)`msgs) AND
       COND users_(u) AND groups_(g) AND mem_(u,g)  -> 
-
 	     FORALL (q:(users_)): 
-	     	    COND
-			st(i) = st(i-1)   ->     
-			 COND
-				mem_(q,g)AND q = u  ->  st(i) = st(i-1) WITH
-			    	    	  [ msgs := add(m, msgs_)
-			   		  , info := info_ WITH  [m :=	 (# sender := u
-						    	  	   	   ,recip := g
-									   ,content := txt #)  ]
-			 		  ,ms := ms_ WITH [(q,m) := read]	
-					  %,ms := insertRight(q,read,ms_)		  	  	
-			  		  ]
-	       				  AND output(i) = OK
-				,mem_(q,g) AND q /= u ->  st(i) = st(i-1) WITH
-			    	    	  [ msgs := add(m, msgs_)
-			   		  , info := info_ WITH  [m :=	 (# sender := u
-						    	  	   	   ,recip := g
-									   ,content := txt #)  ]
-			 		  
-					  ,ms := ms_ WITH [(q,m) := unread]			 
-					 % ,ms := insertRight(q,unread,ms_)  	 	    
-			  		  ]
-	       				  AND output(i) = OK
-				,NOT mem_(q,g) ->  st(i) = st(i-1) WITH
-			    	    	  [ msgs := add(m, msgs_)
-			   		  , info := info_ WITH  [m :=	 (# sender := u
-						    	  	   	   ,recip := g
-									   ,content := txt #)  ]
-			  		  %,ms := insertRight(q,unavailable,ms_) 
-					  ,ms := ms_ WITH [(q,m) := unavailable]	      	  	 	    
-			  		  ] AND output(i) = OK
-			ENDCOND	   
-
-		   ,NOT st(i) = st(i-1)  -> 
-		   	COND 		       	
-				mem_(q,g)AND q = u  ->  st(i) = st(i) WITH
-			    	    	  [ms := st(i)`ms WITH [(q,m) := read]] 
-				,mem_(q,g) AND q /= u ->  st(i) = st(i) WITH
-			    	    	  [ms := st(i)`ms WITH [(q,m) := unread]]
-				,NOT mem_(q,g) ->  st(i) = st(i) WITH
-			    	    	  [ms := st(i)`ms WITH [(q,m) := unavailable]]
-			ENDCOND
-     		  ENDCOND   
+	     	    
+			IF st(i) = st(i-1) THEN 
+			  st(i) = st(i-1) WITH	     [ msgs := add(m, msgs_)
+			   		  		    , info := info_ WITH  [m :=	 (# sender := u
+						    	      	      	    	   	   ,recip := g
+									   		   ,content := txt #)  ]
+			 		  		    ,ms := ms_ WITH [(q,m) := IF u = q THEN read ELSE IF mem_(q,g) THEN unread ELSE unavailable ENDIF ENDIF] ]  AND output(i) = OK
+			ELSE 		      
+			    st(i) = st(i) WITH	     [ms := ms_ WITH [(q,m) := IF u = q THEN read ELSE IF mem_(q,g) THEN unread ELSE unavailable ENDIF ENDIF] ]  AND output(i) = OK
+			ENDIF
+     		   
 	     , NOT users_(u) OR NOT groups_(g) OR NOT mem_(u,g) ->     st(i) = st(i-1)  AND output(i) = error
     	 ENDCOND
    WHERE

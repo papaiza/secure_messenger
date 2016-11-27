@@ -17,7 +17,7 @@ class Message:
             self.from_id = from_id
             self.to_id = to_id
             self.text = text[1:-1]
-            self.read_ids = [from_id]
+            self.read_ids = []
             # all_users[from_id].read_messages.append(Message.msg_id)
             self.unread_ids = [x for x in all_groups[to_id].users.keys() if not x == from_id]
             for unread in self.unread_ids:

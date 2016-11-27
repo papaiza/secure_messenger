@@ -221,12 +221,8 @@
   There are no old messages for this user.
 
 ->read_message(1, 1)
-  21:  ERROR 
-  Message has already been read. See `list_old_messages'.
 
 ->read_message(1, 2)
-  22:  ERROR 
-  Message has already been read. See `list_old_messages'.
 
 ->read_message(2, 2)
   23:  OK
@@ -336,3 +332,26 @@
       [1, Joe]->{3}
 
 ->delete_message(2, 3)
+  35:  ERROR 
+  Message with this ID not found in old/read messages.
+
+->list_old_messages(2)
+  36:  OK
+  There are no old messages for this user.
+
+->list_new_messages(3)
+  37:  OK
+  New/unread messages for user [3, Bob]:
+      1->Hello
+
+->list_users
+  38:  OK
+  3->Bob
+  2->Dan
+  1->Joe
+
+->list_groups
+  39:  OK
+  2->Classmates
+  1->Friends
+

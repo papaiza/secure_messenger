@@ -1,0 +1,2 @@
+filename=$2
+python src/messenger.py -b $2 > "${filename%%.*}.expected.txt"

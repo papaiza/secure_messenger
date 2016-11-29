@@ -977,9 +977,7 @@
     (member const-decl "bool" sets nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
-    (st skolem-const-decl "[DTIME[delta] -> STATE]" messenger nil)
-    (u!2 skolem-const-decl "(st(0)`users)" messenger nil)
-    (m!1 skolem-const-decl "(st(0)`msgs)" messenger nil)
+    nil nil nil
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (nnint_plus_posint_is_posint application-judgement "posint"
@@ -1144,11 +1142,9 @@
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (u!2 skolem-const-decl "(st(i)`users)" messenger nil)
-    (i skolem-const-decl "DTIME[delta]" messenger nil)
+    nil nil
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (numfield nonempty-type-eq-decl nil number_fields nil)
-    (st skolem-const-decl "[DTIME[delta] -> STATE]" messenger nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil) nil
     (STATE type-eq-decl nil messenger nil)
     (USER nonempty-type-decl nil messenger_prelude nil)
     (MSG_STATE type-decl nil messenger_prelude nil)
@@ -1175,8 +1171,7 @@
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (boolean nonempty-type-decl nil booleans nil)
-    (number nonempty-type-decl nil numbers nil)
-    (m!2 skolem-const-decl "(st(i)`msgs)" messenger nil)
+    (number nonempty-type-decl nil numbers nil) nil
     (/= const-decl "boolean" notequal nil)
     (readership const-decl "bool" message_reader nil)
     (read_message const-decl "bool" messenger nil))
@@ -1222,12 +1217,10 @@
     (MSG_INFO type-eq-decl nil message nil)
     (MSG_STATE type-decl nil messenger_prelude nil)
     (USER nonempty-type-decl nil messenger_prelude nil)
-    (STATE type-eq-decl nil messenger nil)
-    (st skolem-const-decl "[DTIME[delta] -> STATE]" messenger nil)
+    (STATE type-eq-decl nil messenger nil) nil
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (i skolem-const-decl "DTIME[delta]" messenger nil)
-    (m!2 skolem-const-decl "(st(i)`msgs)" messenger nil)
+    nil nil
     (int_minus_int_is_int application-judgement "int" integers nil)
     (read_message const-decl "bool" messenger nil))
    shostak))

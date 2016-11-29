@@ -83,7 +83,8 @@ STATE: TYPE =
    ,info : [(msgs) -> MSG_INFO[(users),(groups)]]
    	 % specification of individual messages
    ,ms : [ [(users),(msgs)] -> MSG_STATE ]
-          % message state: for every message and every user that can read it
+   ,msgsAccess: [(users) -> MSG_STATE]
+         % message state: for every message and every user that can read it
 	 % a message can either be unread, read or deleted
   #]
 
@@ -110,7 +111,7 @@ msgOf (st : STATE, u : (st`users))(m : MID): bool =
 fillMsgAccess(st: STATE, u: (st`users), g:(st`groups))(q:(st`users)): MSG_STATE = 
 	       COND
 			st`membership(q,g) -> COND
-					u = q -> read,
+					u = q -> reaad,
 					NOT u = q -> unread
 			      	 ENDCOND,		
 			NOT st`membership(q,g) -> unavailable
@@ -126,7 +127,7 @@ init_state : STATE =
    , membership := emptyset 
    , info := emptyfun[(emptyset[MID]), MSG_INFO[(emptyset[UID]),(emptyset[GID])]]
    , ms := emptyfun[[(emptyset[UID]),(emptyset[MID])],MSG_STATE]
- 
+   , msgsAccess := emptyfun
    #)
 st : VAR [DTIME -> STATE]
 output: VAR [DTIME -> OUTPUT]

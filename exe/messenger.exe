@@ -1,7 +1,6 @@
 filename=$2
 filepath=${filename%%.*}
 srcpath="${filepath%%acceptance*}"
-echo ${#srcpath}
 if [ ${#srcpath} -ge 1 ]; then python $srcpath/src/messenger.py -b $2 > "${filename%%.*}.expected.txt"
 else python src/messenger.py -b $2 > "${filename%%.*}.expected.txt"
 fi

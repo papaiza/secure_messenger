@@ -17,7 +17,7 @@ class Message:
             self.from_id = from_id
             self.to_id = to_id
             self.text = text[1:-1]
-            self.read_ids = []
+            self.read_ids = [from_id]
             # all_users[from_id].read_messages.append(Message.msg_id)
             self.unread_ids = [x for x in all_groups[to_id].users.keys() if not x == from_id]
             for unread in self.unread_ids:
@@ -69,7 +69,7 @@ def read_message(uid, mid, count):
 
 def delete_message(uid, mid, count):
     msg = 'ERROR '
-    if uid > 0 and mid > 0 and mid in all_messages.keys() and uid in all_users.keys() and uid in all_messages[mid].read_ids:
+    if uid > 0 and mid > 0 and mid in all_messages.keys() and uid in all_users.keys() and uid in all_messages[mid].read_ids and uid != all_messages[mid].from_id:
         msg = 'OK'
         all_messages[mid].read_ids.remove(uid)
         if all_messages[mid].from_id != uid:
@@ -84,7 +84,7 @@ def delete_message(uid, mid, count):
     elif mid not in all_messages.keys():
         print "  {}:  {}".format(count, msg)
         print "  Message with this ID does not exist."
-    elif uid not in all_messages[mid].read_ids:
+    elif uid == all_messages[mid].from_id or uid not in all_messages[mid].read_ids:
         print "  {}:  {}".format(count, msg)
         print "  Message with this ID not found in old/read messages."
 

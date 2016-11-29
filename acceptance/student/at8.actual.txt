@@ -221,6 +221,8 @@
   There are no old messages for this user.
 
 ->read_message(1, 1)
+  21:  ERROR 
+  Message has already been read. See `list_old_messages'.
 
 ->list_new_messages(1)
   22:  OK
@@ -232,6 +234,8 @@
   There are no old messages for this user.
 
 ->read_message(1, 2)
+  24:  ERROR 
+  Message has already been read. See `list_old_messages'.
 
 ->list_new_messages(1)
   25:  OK

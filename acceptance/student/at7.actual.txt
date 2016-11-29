@@ -221,8 +221,12 @@
   There are no old messages for this user.
 
 ->read_message(1, 1)
+  21:  ERROR 
+  Message has already been read. See `list_old_messages'.
 
 ->read_message(1, 2)
+  22:  ERROR 
+  Message has already been read. See `list_old_messages'.
 
 ->read_message(2, 2)
   23:  OK

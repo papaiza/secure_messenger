@@ -1,0 +1,163 @@
+  0:  OK
+
+->add_user(1,"Joe")
+  1:  OK
+  Users:
+      1->Joe
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(2,"Dan")
+  2:  OK
+  Users:
+      1->Joe
+      2->Dan
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(3,"Bob")
+  3:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(4,"Joe")
+  4:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Joe
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_user(5,"Dan")
+  5:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Joe
+      5->Dan
+  Groups:
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_group(1,"Friends")
+  6:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Joe
+      5->Dan
+  Groups:
+      1->Friends
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_group(2,"Workers")
+  7:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Joe
+      5->Dan
+  Groups:
+      1->Friends
+      2->Workers
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_group(3,"Chums")
+  8:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Joe
+      5->Dan
+  Groups:
+      1->Friends
+      2->Workers
+      3->Chums
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_group(4,"Workers")
+  9:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Joe
+      5->Dan
+  Groups:
+      1->Friends
+      2->Workers
+      3->Chums
+      4->Workers
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->add_group(5,"Friends")
+  10:  OK
+  Users:
+      1->Joe
+      2->Dan
+      3->Bob
+      4->Joe
+      5->Dan
+  Groups:
+      1->Friends
+      2->Workers
+      3->Chums
+      4->Workers
+      5->Friends
+  Registrations:
+  All messages:
+  New messages:
+  Old/read messages:
+
+->list_users
+  11:  OK
+  3->Bob
+  2->Dan
+  5->Dan
+  1->Joe
+  4->Joe
+
+->list_groups
+  12:  OK
+  3->Chums
+  1->Friends
+  5->Friends
+  2->Workers
+  4->Workers
+

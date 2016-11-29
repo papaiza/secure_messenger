@@ -39,7 +39,9 @@ def selectionSort(alist):
         for location in range(1, fillslot + 1):
             if alist[location].user_name > alist[positionOfMax].user_name:
                 positionOfMax = location
-
+            elif alist[location].user_name == alist[positionOfMax].user_name:
+                if alist[location].uid > alist[positionOfMax].uid:
+                    positionOfMax = location
         temp = alist[fillslot]
         alist[fillslot] = alist[positionOfMax]
         alist[positionOfMax] = temp

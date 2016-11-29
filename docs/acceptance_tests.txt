@@ -1,0 +1,26 @@
+at1
+- This is the professors acceptance test and it test for the general use of the messenger system. It tests for a wide variety of situations and tests all the commands.
+
+at2
+- This tests the error handling of send message. It was created to check what happens when both user ID and group ID are none valid. The expected output should show the precedence of the errror messages.
+
+at3
+- This tests add_user and checks all the possibilities of the input values. The expected output should show the precedence of the errror messages.
+
+at4
+- This tests add_group and checks all the possibilities of the input values. The expected output should show the precedence of the errror messages.
+
+at5
+- This tests register_user and checks all the possibilities of the input values. The expected output should show the precedence of the errror messages.
+
+at6
+- This tests send message more extensively and checks all the possibilities of the input values. The expected output should show the precedence of the errror messages. It also tests list_users and list_groups.
+
+at7
+- This tests read_message, delete_message,list_old_messages and list_new_messages and checks all the possibilities of the input values. The expected output should show the precedence of the errror messages.
+
+at8
+- This tests what happens when a user tries to delete a message that they have sent and is in their read messages.
+
+at9
+- Tests list user and list groups for alphabetical order sort. Also tests what happens when the names are the same. It will sort by name and then if the names are equal will sort by lowest ID first.

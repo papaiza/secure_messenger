@@ -67,7 +67,9 @@ def selectionSort(alist):
         for location in range(1, fillslot + 1):
             if alist[location].gname > alist[positionOfMax].gname:
                 positionOfMax = location
-
+            elif alist[location].gname == alist[positionOfMax].gname:
+                if alist[location].gid > alist[positionOfMax].gid:
+                    positionOfMax = location
         temp = alist[fillslot]
         alist[fillslot] = alist[positionOfMax]
         alist[positionOfMax] = temp

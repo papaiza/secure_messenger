@@ -1,6 +1,6 @@
 filename=$2
 filepath=${filename%%.*}
-srcpath="${filepath%%acceptance*}"
+srcpath="${filepath%%tests*}"
 if [ ${#srcpath} -ge 1 ]; then python $srcpath/src/messenger.py -b $2
 else python src/messenger.py -b $2
 fi

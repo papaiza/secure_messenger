@@ -132,7 +132,7 @@
   New messages:
   Old/read messages:
 
-->send_message(1, 2, "Hello")
+->send_message(1, 2,"Hello")
   12:  OK
   Users:
       1->Joe
@@ -159,7 +159,7 @@
   14:  OK
   There are no old messages for this user.
 
-->send_message(1, 1, "HI")
+->send_message(1, 1,"HI")
   15:  OK
   Users:
       1->Joe
@@ -188,7 +188,7 @@
   17:  OK
   There are no old messages for this user.
 
-->send_message(2, 1, "WOOO")
+->send_message(2, 1,"WOOO")
   18:  OK
   Users:
       1->Joe

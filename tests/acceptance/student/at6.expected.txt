@@ -132,7 +132,7 @@
   New messages:
   Old/read messages:
 
-->send_message(1, 2, "Hello")
+->send_message(1, 2,"Hello")
   12:  OK
   Users:
       1->Joe
@@ -151,7 +151,7 @@
       [3, Bob]->{1}
   Old/read messages:
 
-->send_message(1, 1, "HI")
+->send_message(1, 1,"HI")
   13:  OK
   Users:
       1->Joe
@@ -172,51 +172,51 @@
       [3, Bob]->{1}
   Old/read messages:
 
-->send_message(-1, 1, "aasdf")
+->send_message(-1, 1,"aasdf")
   14:  ERROR 
   ID must be a positive integer.
 
-->send_message(1, -5, "aasdf")
+->send_message(1, -5,"aasdf")
   15:  ERROR 
   ID must be a positive integer.
 
-->send_message(-5, -5, "aasdf")
+->send_message(-5, -5,"aasdf")
   16:  ERROR 
   ID must be a positive integer.
 
-->send_message(-5, -5, "")
+->send_message(-5, -5,"")
   17:  ERROR 
   ID must be a positive integer.
 
-->send_message(2, 1, "")
+->send_message(2, 1,"")
   18:  ERROR 
   A message may not be an empty string.
 
-->send_message(5, 1, "aasdf")
+->send_message(5, 1,"aasdf")
   19:  ERROR 
   User with this ID does not exist.
 
-->send_message(1, 5, "aasdf")
+->send_message(1, 5,"aasdf")
   20:  ERROR 
   Group with this ID does not exist.
 
-->send_message(5, 1, "")
+->send_message(5, 1,"")
   21:  ERROR 
   User with this ID does not exist.
 
-->send_message(1, 5, "")
+->send_message(1, 5,"")
   22:  ERROR 
   Group with this ID does not exist.
 
-->send_message(2, 2, "Wont work")
+->send_message(2, 2,"Wont work")
   23:  ERROR 
   User not authorized to send messages to the specified group.
 
-->send_message(3, 1, "Neither will this")
+->send_message(3, 1,"Neither will this")
   24:  ERROR 
   User not authorized to send messages to the specified group.
 
-->send_message(3, 1, "")
+->send_message(3, 1,"")
   25:  ERROR 
   A message may not be an empty string.
 

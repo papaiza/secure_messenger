@@ -47,11 +47,11 @@ if sys.argv[1] == '-b':
                     pretty_print(msg)
 
                 elif line[:start] == 'send_message':
-                    print '->{}'.format(line[:end + 1])
                     smid = line.find(',', mid+1)
                     from_id = int(line[start+1:mid])
                     to_id = int(line[mid+1: smid])
                     text = line[quote:end]
+                    print '->{}'.format(line[:smid + 1] + line[quote:end+1])
                     message = Message(from_id, to_id, text, count)
                     pretty_print(message.msg1)
 

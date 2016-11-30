@@ -1,6 +1,6 @@
-filename=$0
-filepath=${filename%%.*}
-srcpath="${filepath%%exe*}"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+srcpath="${DIR%%exe*}"
+
 
 if [ ${#srcpath} -ge 1 ]; then python $srcpath/src/messenger.py -b $2
 else python src/messenger.py -b $2

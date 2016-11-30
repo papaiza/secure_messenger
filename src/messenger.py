@@ -95,8 +95,6 @@ if sys.argv[1] == '-b':
                     else:
                         print '  There are no users registered in the system yet.'
 
-                else:
-                    print("Not a valid command")
                 print ""
 
 

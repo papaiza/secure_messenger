@@ -1,8 +1,6 @@
 filename=$0
 filepath=${filename%%.*}
-echo $filepath
 srcpath="${filepath%%exe*}"
-echo $srcpath
 
 if [ ${#srcpath} -ge 1 ]; then python $srcpath/src/messenger.py -b $2
 else python src/messenger.py -b $2

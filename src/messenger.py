@@ -29,7 +29,9 @@ if sys.argv[1] == '-b':
                 mid = line.find(',')
                 quote = line.find('"')
                 end = line.find(')')
-                tab = line.find('\t')
+                groups = line.find('ps')
+                users = line.find('rs')
+                # tab = line.find('\t')
 
                 if line[:start] == 'add_user':
                     print '->{}'.format(line[:mid+1] + line[quote:end+1])
@@ -79,16 +81,16 @@ if sys.argv[1] == '-b':
                     print '->{}'.format(line[:end + 1])
                     list_old_messages(int(line[start+1:end]), count)
 
-                elif line[:tab] == 'list_groups':
-                    print '->{}'.format(line[:line.find('ps') + 2])
+                elif line[:groups+2] == 'list_groups':
+                    print '->{}'.format(line[:groups + 2])
                     print '  {}:  OK'.format(count)
                     if len(all_groups) > 0:
                         list_groups()
                     else:
                         print '  There are no groups registered in the system yet.'
 
-                elif line[:tab] == 'list_users':
-                    print '->{}'.format(line[:line.find('rs') + 2])
+                elif line[:users + 2] == 'list_users':
+                    print '->{}'.format(line[:users + 2])
                     print '  {}:  OK'.format(count)
                     if len(all_users) > 0:
                         list_users()

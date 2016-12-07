@@ -10,4 +10,4 @@ For example:
 
 This will generate a file called at2.expected.txt which will show the output of the user commands and actions.
 
-For a full explanation on the system, check the messenger.pdf file in the docs folder. 
+For a full explanation on the system, check here: https://github.com/papaiza/secure_messenger/blob/master/docs/messenger.pdf 
